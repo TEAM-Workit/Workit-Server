@@ -3,10 +3,12 @@ package workit.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
@@ -31,6 +33,10 @@ public class Work extends TimeStamped {
 
     @Column
     private String description;
+
+    @Column
+    @DateTimeFormat(pattern = "yy-MM-dd")
+    private Date date;
 
     @Column
     private boolean isDeleted = false;

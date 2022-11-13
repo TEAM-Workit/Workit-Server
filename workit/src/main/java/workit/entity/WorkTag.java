@@ -14,6 +14,7 @@ public class WorkTag extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "work_tag_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
