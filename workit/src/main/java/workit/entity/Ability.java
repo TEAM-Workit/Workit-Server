@@ -8,11 +8,11 @@ import java.util.List;
 
 @Entity
 @Getter
-public class Tag extends TimeStamped {
+public class Ability extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_id")
+    @Column(name = "ability_id")
     private Long id;
 
     @Column(length = 30)
@@ -20,8 +20,8 @@ public class Tag extends TimeStamped {
 
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
-    private TagType tagType;
+    private AbilityType abilityType;
 
-    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
-    private List<WorkTag> workTags = new ArrayList<>();
+    @OneToMany(mappedBy = "ability", cascade = CascadeType.ALL)
+    private List<WorkAbility> workAbilities = new ArrayList<>();
 }

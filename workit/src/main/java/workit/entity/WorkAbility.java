@@ -10,11 +10,11 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @Setter
-public class WorkTag extends TimeStamped {
+public class WorkAbility extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "work_tag_id")
+    @Column(name = "work_ability_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
@@ -22,8 +22,8 @@ public class WorkTag extends TimeStamped {
     private Work work;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "tag_id")
-    private Tag tag;
+    @JoinColumn(name = "ability_id")
+    private Ability ability;
 
     @Column
     private boolean isDeleted;

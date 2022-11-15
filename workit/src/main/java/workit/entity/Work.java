@@ -42,5 +42,5 @@ public class Work extends TimeStamped {
     private boolean isDeleted = false;
 
     @OneToMany(mappedBy = "work", cascade = CascadeType.ALL)
-    private List<WorkTag> workTags = new ArrayList<>();
+    private List<WorkAbility> workAbilities = new ArrayList<>();
 }

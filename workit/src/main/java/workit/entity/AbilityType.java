@@ -1,5 +1,5 @@
 package workit.entity;
 
-public enum TagType {
+public enum AbilityType {
     SOFT, HARD
 }
