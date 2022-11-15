@@ -8,11 +8,15 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 
 @Service
 public class OAuthService{
     @Value("${kakao.authUrl}")
-    private String reqURL;
+    private String kakaoAuthURL;
+
+    @Value("${kakao.user-api-url}")
+    private String kakaoUserApiUrl;
 
     @Value("${kakao.restapi-key}")
     private String restapiKey;
@@ -20,12 +24,13 @@ public class OAuthService{
     @Value("${kakao.redirect-url}")
     private String redirectUrl;
 
+    // TODO: 나중에 버릴 함수
     public String getKakaoAccessToken (String code) {
         String access_Token = "";
         String refresh_Token = "";
 
         try {
-            URL url = new URL(reqURL);
+            URL url = new URL(kakaoAuthURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             //POST 요청을 위해 기본값이 false인 setDoOutput을 true로
@@ -73,5 +78,41 @@ public class OAuthService{
         }
 
         return access_Token;
+    }
+
+    public void createKakaoUser(String token) {
+        try {
+            URL url = new URL(kakaoUserApiUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Authorization", "Bearer " + token);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line = "";
+            StringBuilder result = new StringBuilder();
+            while ((line = br.readLine()) != null) {
+                result.append(line);
+            }
+
+            JsonElement element = JsonParser.parseString(result.toString());
+
+            boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
+
+            if(!hasEmail){
+                throw new IllegalArgumentException();
+            }
+            String email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
+            String nickname = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
+
+            System.out.println("id : " + nickname);
+            System.out.println("email : " + email);
+
+            br.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
