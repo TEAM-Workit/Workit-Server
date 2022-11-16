@@ -1,16 +1,29 @@
-package workit.auth;
+package workit.service;
 
 import com.google.gson.JsonParser;
 import com.google.gson.JsonElement;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import workit.auth.JwtTokenProvider;
+import workit.dto.user.LoginResponseDto;
+import workit.dto.user.SignupRequestDto;
+import workit.entity.SocialType;
+import workit.entity.User;
+import workit.repository.UserRepository;
+import workit.util.CustomException;
+import workit.util.ResponseCode;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Service
-public class OAuthService{
+@RequiredArgsConstructor
+public class AuthService {
+    private static final String KAKAO = "KAKAO";
+    private static final String APPLE = "APPLE";
+
     @Value("${kakao.authUrl}")
     private String kakaoAuthURL;
 
@@ -22,6 +35,18 @@ public class OAuthService{
 
     @Value("${kakao.redirect-url}")
     private String redirectUrl;
+
+    private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public LoginResponseDto socialLogin(String social, String socialToken) {
+        if (social.equals(KAKAO)) {
+            return kakaoLogin(socialToken);
+        } else if (social.equals(APPLE)) {
+            return appleLogin(socialToken);
+        }
+        throw new CustomException(ResponseCode.INVALID_SOCIAL_TYPE);
+    }
 
     // TODO: 나중에 버릴 함수
     public String getKakaoAccessToken (String code) {
@@ -79,14 +104,14 @@ public class OAuthService{
         return access_Token;
     }
 
-    public void createKakaoUser(String token) {
+    private LoginResponseDto kakaoLogin(String socialToken) {
         try {
             URL url = new URL(kakaoUserApiUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
-            connection.setRequestProperty("Authorization", "Bearer " + token);
+            connection.setRequestProperty("Authorization", "Bearer " + socialToken);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = "";
@@ -94,24 +119,38 @@ public class OAuthService{
             while ((line = br.readLine()) != null) {
                 result.append(line);
             }
+            br.close();
 
             JsonElement element = JsonParser.parseString(result.toString());
 
             boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
-
             if(!hasEmail){
-                throw new IllegalArgumentException();
+                throw new CustomException(ResponseCode.DISAGREE_KAKAO_EMAIL);
             }
             String email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
             String nickname = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
 
-            System.out.println("id : " + nickname);
-            System.out.println("email : " + email);
+            String accessToken = getAccessToken(new SignupRequestDto(email, nickname, SocialType.KAKAO));
 
-            br.close();
-
+            return new LoginResponseDto(accessToken);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        throw new CustomException(ResponseCode.INTERNAL_SERVER_ERROR);
+    }
+
+    private LoginResponseDto appleLogin(String socialToken) {
+        throw new CustomException(ResponseCode.INTERNAL_SERVER_ERROR);
+    }
+
+    private String getAccessToken(SignupRequestDto requestDto) {
+        if (!userRepository.existsByEmail(requestDto.getEmail())) {
+            User user = userRepository.save(new User(requestDto));
+            return jwtTokenProvider.createToken(user.getEmail());
+        }
+        User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
+                () -> new CustomException(ResponseCode.LOGIN_FAILED)
+        );
+        return jwtTokenProvider.createToken(user.getEmail());
     }
 }
