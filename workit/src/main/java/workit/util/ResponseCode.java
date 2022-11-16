@@ -21,7 +21,8 @@ public enum ResponseCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, false, "유효하지 않은 토큰입니다."),
 
     // user
-    GET_USER_INFO_SUCCESS(HttpStatus.OK, true, "사용자 정보 조회 성공");
+    GET_USER_INFO_SUCCESS(HttpStatus.OK, true, "사용자 정보 조회 성공"),
+    DELETE_USER_SUCCESS(HttpStatus.OK, true, "탈퇴 성공");
 
     private final HttpStatus httpStatus;
     private final Boolean success;

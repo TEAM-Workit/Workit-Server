@@ -12,7 +12,7 @@ public class ResponseMessage {
     private final int status;
     private final boolean success;
     private final String message;
-    private final Object data;
+    private Object data;
 
     public static ResponseEntity<ResponseMessage> toResponseEntity(ResponseCode responseCode) {
         return ResponseEntity

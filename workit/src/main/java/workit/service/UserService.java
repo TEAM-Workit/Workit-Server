@@ -31,4 +31,13 @@ public class UserService {
 
         return new UserNicknameResponseDto(user.getNickname());
     }
+
+    public void deleteUser(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new CustomException(ResponseCode.USER_NOT_FOUND)
+        );
+
+        user.setDeleted(true);
+        userRepository.save(user);
+    }
 }
