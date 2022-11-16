@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 public class TimeStamped {
 
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @LastModifiedDate
-    private LocalDateTime modifiedAt;
+    private LocalDateTime modifiedAt = LocalDateTime.now();
 }

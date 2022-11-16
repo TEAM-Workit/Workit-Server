@@ -18,7 +18,10 @@ public enum ResponseCode {
     DISAGREE_KAKAO_EMAIL(HttpStatus.BAD_REQUEST, false, "카카오 이메일 항목에 동의하지 않았습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, false, "해당 계정이 존재하지 않습니다."),
     INVALID_SOCIAL_TYPE(HttpStatus.BAD_REQUEST, false, "유효하지 않는 소셜 타입입니다."),
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, false, "유효하지 않은 토큰입니다.");
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, false, "유효하지 않은 토큰입니다."),
+
+    // user
+    GET_USER_INFO_SUCCESS(HttpStatus.OK, true, "사용자 정보 조회 성공");
 
     private final HttpStatus httpStatus;
     private final Boolean success;
