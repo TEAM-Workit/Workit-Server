@@ -18,6 +18,16 @@ import javax.validation.Valid;
 public class WorkController {
     private final WorkService workService;
 
+    @GetMapping
+    public ResponseEntity<ResponseMessage> getAllWorks(HttpServletRequest request) {
+        String email = request.getUserPrincipal().getName();
+
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.GET_ALL_WORKIT_SUCCESS,
+                workService.getWorks(email)
+        );
+    }
+
     @PostMapping
     public ResponseEntity<ResponseMessage> createWork(
             @Valid @RequestBody WorkCreateRequestDto requestDto, HttpServletRequest request) {

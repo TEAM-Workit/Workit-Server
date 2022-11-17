@@ -3,9 +3,7 @@ package workit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import workit.dto.work.WorkCreateRequestDto;
-import workit.dto.work.WorkCreateResponseDto;
-import workit.dto.work.WorkRequestDto;
+import workit.dto.work.*;
 import workit.entity.*;
 import workit.repository.*;
 import workit.util.CustomException;
@@ -24,6 +22,24 @@ public class WorkService {
     private final WorkRepository workRepository;
     private final WorkAbilityRepository workAbilityRepository;
     private final AbilityRepository abilityRepository;
+
+    public AllWorkResponseDto getWorks(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new CustomException(ResponseCode.USER_NOT_FOUND)
+        );
+
+        List<Project> projects = projectRepository.findAllByUser(user);
+        List<WorkResponseDto> workResponseDtos = new ArrayList<>();
+        projects.forEach(project -> {
+            workRepository.findAllByProject(project)
+                    .forEach(work -> {
+                        WorkResponseDto workResponseDto = new WorkResponseDto(work);
+                        workResponseDtos.add(workResponseDto);
+                    });
+                });
+
+        return new AllWorkResponseDto(workResponseDtos);
+    }
 
     public WorkCreateResponseDto createWork(WorkCreateRequestDto request, String email) {
         User user = userRepository.findByEmail(email).orElseThrow(
