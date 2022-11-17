@@ -22,7 +22,15 @@ public enum ResponseCode {
 
     // user
     GET_USER_INFO_SUCCESS(HttpStatus.OK, true, "사용자 정보 조회 성공"),
-    DELETE_USER_SUCCESS(HttpStatus.OK, true, "탈퇴 성공");
+    DELETE_USER_SUCCESS(HttpStatus.OK, true, "탈퇴 성공"),
+
+    // project
+    INVALID_PROJECT_TITLE_LENGTH(HttpStatus.BAD_REQUEST, false, "30자 이하의 프로젝트 제목으로 설정해주세요."),
+
+    // work
+    INVALID_WORK_TITLE_LENGTH(HttpStatus.BAD_REQUEST, false, "30자 이하의 업무 제목으로 설정해주세요."),
+    INVALID_WORK_DESCRIPTION_LENGTH(HttpStatus.BAD_REQUEST, false, "1000자 이하의 설명으로 작성해주세요."),
+    WORK_CREATE_SUCCESS(HttpStatus.CREATED, true, "업무 생성 성공");
 
     private final HttpStatus httpStatus;
     private final Boolean success;

@@ -8,6 +8,8 @@ import workit.service.AuthService;
 import workit.util.ResponseCode;
 import workit.util.ResponseMessage;
 
+import javax.validation.Valid;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/auth")
@@ -28,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/login/{social}")
-    public ResponseEntity<ResponseMessage> socialLogin(@PathVariable String social, @RequestBody LoginRequestDto requestDto) {
+    public ResponseEntity<ResponseMessage> socialLogin(@PathVariable String social, @Valid @RequestBody LoginRequestDto requestDto) {
         return ResponseMessage.toResponseEntity(
                 ResponseCode.LOGIN_SUCCESS,
                 authService.socialLogin(social, requestDto.getSocialToken())
