@@ -1,6 +1,5 @@
 package workit.dto.work;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import workit.entity.Work;
 

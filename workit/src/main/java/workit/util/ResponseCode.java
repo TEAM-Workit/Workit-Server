@@ -37,7 +37,10 @@ public enum ResponseCode {
     WORK_MODIFY_SUCCESS(HttpStatus.CREATED, true, "업무 수정 성공"),
     DELETE_WORK_SUCCESS(HttpStatus.CREATED, true, "업무 삭제 성공"),
     NOT_USERS_WORK(HttpStatus.BAD_REQUEST, false, "로그인한 사용자의 업무가 아닙니다."),
-    INVALID_DATE_TYPE(HttpStatus.BAD_REQUEST, false, "올바른 날짜 형식이 아닙니다.");
+    INVALID_DATE_TYPE(HttpStatus.BAD_REQUEST, false, "올바른 날짜 형식이 아닙니다."),
+
+    // ability
+    GET_ALL_ABILITY_SUCCESS(HttpStatus.OK, true, "전체 역량 태그 조회 성공");
 
     private final HttpStatus httpStatus;
     private final Boolean success;
