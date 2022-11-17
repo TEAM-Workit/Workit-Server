@@ -30,7 +30,8 @@ public enum ResponseCode {
     // work
     INVALID_WORK_TITLE_LENGTH(HttpStatus.BAD_REQUEST, false, "30자 이하의 업무 제목으로 설정해주세요."),
     INVALID_WORK_DESCRIPTION_LENGTH(HttpStatus.BAD_REQUEST, false, "1000자 이하의 설명으로 작성해주세요."),
-    WORK_CREATE_SUCCESS(HttpStatus.CREATED, true, "업무 생성 성공");
+    WORK_CREATE_SUCCESS(HttpStatus.CREATED, true, "업무 생성 성공"),
+    WORK_MODIFY_SUCCESS(HttpStatus.CREATED, true, "업무 수정 성공");
 
     private final HttpStatus httpStatus;
     private final Boolean success;

@@ -14,7 +14,6 @@ import workit.validator.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -30,15 +29,8 @@ public class WorkService {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
-        String projectTitle = request.getProjectTitle();
 
-        Project project = projectRepository.findByUserAndTitle(user, projectTitle)
-                .orElseGet(() -> {
-                    Validator.validateProjectTitleLength(projectTitle);
-                    Project proj = new Project(projectTitle, user);
-                    projectRepository.save(proj);
-                    return proj;
-                });
+        Project project = getProject(user, request.getProjectTitle());
 
         Validator.validateWorkTitleLength(request.getWorkTitle());
         Validator.validateWorkDescriptionLength(request.getDescription());
@@ -57,9 +49,38 @@ public class WorkService {
         return new WorkCreateResponseDto(work);
     }
 
-    private boolean checkProjectTitleExist(User user, String title) {
-        Optional<Project> project = projectRepository.findByUserAndTitle(user, title);
-        return project.isPresent();
+    public WorkCreateResponseDto modifyWork(WorkCreateRequestDto request, Long workId, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new CustomException(ResponseCode.USER_NOT_FOUND)
+        );
+
+        Work work = workRepository.findById(workId).orElseThrow(
+                () -> new CustomException(ResponseCode.BAD_REQUEST)
+        );
+
+        Project project = getProject(user, request.getProjectTitle());
+
+        WorkRequestDto workRequestDto = new WorkRequestDto(
+                project,
+                request.getWorkTitle(),
+                request.getDescription(),
+                request.getDate(),
+                makeWorkAbilities(work, abilityRepository.findAllById(request.getAbilities()))
+        );
+        work.save(workRequestDto);
+        workRepository.save(work);
+
+        return new WorkCreateResponseDto(work);
+    }
+
+    private Project getProject(User user, String projectTitle) {
+        return projectRepository.findByUserAndTitle(user, projectTitle)
+                .orElseGet(() -> {
+                    Validator.validateProjectTitleLength(projectTitle);
+                    Project proj = new Project(projectTitle, user);
+                    projectRepository.save(proj);
+                    return proj;
+                });
     }
 
     private List<WorkAbility> makeWorkAbilities(Work work, List<Ability> abilities) {

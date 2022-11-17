@@ -2,10 +2,7 @@ package workit.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import workit.dto.work.WorkCreateRequestDto;
 import workit.service.WorkService;
 import workit.util.ResponseCode;
@@ -28,6 +25,18 @@ public class WorkController {
         return ResponseMessage.toResponseEntity(
                 ResponseCode.WORK_CREATE_SUCCESS,
                 workService.createWork(requestDto, email)
+        );
+    }
+
+    @PutMapping("/{workId}")
+    public ResponseEntity<ResponseMessage> modifyWork(
+            @Valid @RequestBody WorkCreateRequestDto requestDto, @PathVariable Long workId, HttpServletRequest request
+    ) {
+        String email = request.getUserPrincipal().getName();
+
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.WORK_MODIFY_SUCCESS,
+                workService.modifyWork(requestDto, workId, email)
         );
     }
 }
