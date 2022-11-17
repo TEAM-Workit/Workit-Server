@@ -55,8 +55,9 @@ public class WorkService {
         );
 
         Work work = workRepository.findById(workId).orElseThrow(
-                () -> new CustomException(ResponseCode.BAD_REQUEST)
+                () -> new CustomException(ResponseCode.WORK_NOT_FOUND)
         );
+        Validator.validateUsersWork(work, user);
 
         Project project = getProject(user, request.getProjectTitle());
 
@@ -71,6 +72,19 @@ public class WorkService {
         workRepository.save(work);
 
         return new WorkCreateResponseDto(work);
+    }
+
+    public void deleteWork(Long workId, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new CustomException(ResponseCode.USER_NOT_FOUND)
+        );
+
+        Work work = workRepository.findById(workId).orElseThrow(
+                () -> new CustomException(ResponseCode.WORK_NOT_FOUND)
+        );
+        Validator.validateUsersWork(work, user);
+
+        workRepository.delete(work);
     }
 
     private Project getProject(User user, String projectTitle) {

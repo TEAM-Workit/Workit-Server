@@ -7,6 +7,7 @@ import workit.dto.work.WorkCreateRequestDto;
 import workit.service.WorkService;
 import workit.util.ResponseCode;
 import workit.util.ResponseMessage;
+import workit.util.ResponseNonDataMessage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -38,5 +39,13 @@ public class WorkController {
                 ResponseCode.WORK_MODIFY_SUCCESS,
                 workService.modifyWork(requestDto, workId, email)
         );
+    }
+
+    @DeleteMapping("/{workId}")
+    public ResponseEntity<ResponseNonDataMessage> deleteWork(@PathVariable Long workId, HttpServletRequest request) {
+        String email = request.getUserPrincipal().getName();
+        workService.deleteWork(workId, email);
+
+        return ResponseNonDataMessage.toResponseEntity(ResponseCode.DELETE_WORK_SUCCESS);
     }
 }

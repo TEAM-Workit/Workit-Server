@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 @ControllerAdvice
 public class ExceptionHandler {
     @org.springframework.web.bind.annotation.ExceptionHandler(value = Exception.class)
-    protected ResponseEntity<ResponseMessage> handleCustomException(Exception e) {
+    protected ResponseEntity<ResponseNonDataMessage> handleCustomException(Exception e) {
         if (e instanceof CustomException) {
-            return ResponseMessage.toResponseEntity(((CustomException) e).getResponseCode());
+            return ResponseNonDataMessage.toResponseEntity(((CustomException) e).getResponseCode());
         } else if (e instanceof MethodArgumentNotValidException || e instanceof HttpMessageNotReadableException) {
-            return ResponseMessage.toResponseEntity(new CustomException(ResponseCode.NO_VALUE_REQUIRED).getResponseCode());
+            return ResponseNonDataMessage.toResponseEntity(new CustomException(ResponseCode.NO_VALUE_REQUIRED).getResponseCode());
         }
         System.out.println(e);
-        return ResponseMessage.toResponseEntity(new CustomException(ResponseCode.BAD_REQUEST).getResponseCode());
+        return ResponseNonDataMessage.toResponseEntity(new CustomException(ResponseCode.BAD_REQUEST).getResponseCode());
     }
 }
