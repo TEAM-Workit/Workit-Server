@@ -18,6 +18,17 @@ import javax.validation.Valid;
 public class WorkController {
     private final WorkService workService;
 
+    @GetMapping("/date")
+    public ResponseEntity<ResponseMessage> getAllWorksByDateFilter(
+            @RequestParam("start") String start, @RequestParam("end") String end, HttpServletRequest request) {
+        String email = request.getUserPrincipal().getName();
+
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.GET_ALL_WORKIT_SUCCESS,
+                workService.getWorksByDateFilter(email, start, end)
+        );
+    }
+
     @GetMapping
     public ResponseEntity<ResponseMessage> getAllWorks(HttpServletRequest request) {
         String email = request.getUserPrincipal().getName();

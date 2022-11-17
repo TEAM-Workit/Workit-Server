@@ -10,7 +10,10 @@ import workit.util.CustomException;
 import workit.util.ResponseCode;
 import workit.validator.Validator;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -22,6 +25,39 @@ public class WorkService {
     private final WorkRepository workRepository;
     private final WorkAbilityRepository workAbilityRepository;
     private final AbilityRepository abilityRepository;
+
+    public AllWorkResponseDto getWorksByDateFilter(String email, String start, String end) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new CustomException(ResponseCode.USER_NOT_FOUND)
+        );
+
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date startDate = simpleDateFormat.parse(start);
+            Date endDate = simpleDateFormat.parse(end);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(endDate);
+            calendar.add(Calendar.DATE, 1);
+            String endPlusOne = simpleDateFormat.format(calendar.getTime());
+            Date finalEndDate = simpleDateFormat.parse(endPlusOne);
+
+            List<Project> projects = projectRepository.findAllByUser(user);
+            List<WorkResponseDto> workResponseDtos = new ArrayList<>();
+            projects.forEach(project -> {
+                workRepository.findAllByProject(project).stream()
+                        .filter(work -> work.getDate().equals(startDate) || work.getDate().after(startDate))
+                        .filter(work -> work.getDate().equals(finalEndDate) || work.getDate().before(finalEndDate))
+                        .forEach(work -> {
+                            WorkResponseDto workResponseDto = new WorkResponseDto(work);
+                            workResponseDtos.add(workResponseDto);
+                        });
+            });
+            return new AllWorkResponseDto(workResponseDtos);
+        } catch (Exception e) {
+            throw new CustomException(ResponseCode.INVALID_DATE_TYPE);
+        }
+    }
 
     public AllWorkResponseDto getWorks(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(
@@ -36,7 +72,7 @@ public class WorkService {
                         WorkResponseDto workResponseDto = new WorkResponseDto(work);
                         workResponseDtos.add(workResponseDto);
                     });
-                });
+        });
 
         return new AllWorkResponseDto(workResponseDtos);
     }
@@ -47,6 +83,10 @@ public class WorkService {
         );
 
         Project project = getProject(user, request.getProjectTitle());
+
+        if (request.getAbilities().isEmpty()) {
+            throw new CustomException(ResponseCode.NO_ABILITIES);
+        }
 
         Validator.validateWorkTitleLength(request.getWorkTitle());
         Validator.validateWorkDescriptionLength(request.getDescription());
@@ -76,6 +116,10 @@ public class WorkService {
         Validator.validateUsersWork(work, user);
 
         Project project = getProject(user, request.getProjectTitle());
+
+        if (request.getAbilities().isEmpty()) {
+            throw new CustomException(ResponseCode.NO_ABILITIES);
+        }
 
         WorkRequestDto workRequestDto = new WorkRequestDto(
                 project,
