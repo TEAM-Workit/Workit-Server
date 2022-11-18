@@ -4,9 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
+import workit.dto.work.WorkRequestDto;
 
 import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,14 +28,14 @@ public class Work extends TimeStamped {
     @JoinColumn(name = "project_id")
     private Project project;
 
-    @Column(length = 20)
+    @Column(length = 30)
     private String title;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column
-    @DateTimeFormat(pattern = "yy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
 
     @Column
@@ -43,4 +43,12 @@ public class Work extends TimeStamped {
 
     @OneToMany(mappedBy = "work", cascade = CascadeType.ALL)
     private List<WorkAbility> workAbilities = new ArrayList<>();
+
+    public void save(WorkRequestDto request) {
+        this.project = request.getProject();
+        this.title = request.getTitle();
+        this.description = request.getDescription();
+        this.date = request.getDate();
+        this.workAbilities = request.getWorkAbilities();
+    }
 }

@@ -1,6 +1,7 @@
 package workit.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Project extends TimeStamped {
 
     @Id
@@ -23,7 +25,7 @@ public class Project extends TimeStamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(length = 20)
+    @Column(length = 30)
     private String title;
 
     @Column
@@ -31,4 +33,9 @@ public class Project extends TimeStamped {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     List<Work> works = new ArrayList<>();
+
+    public Project(String title, User user) {
+        this.title = title;
+        this.user = user;
+    }
 }

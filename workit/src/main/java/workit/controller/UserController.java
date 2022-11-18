@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import workit.service.UserService;
-import workit.util.ExceptionHandler;
 import workit.util.ResponseCode;
 import workit.util.ResponseMessage;
 import workit.util.ResponseNonDataMessage;
