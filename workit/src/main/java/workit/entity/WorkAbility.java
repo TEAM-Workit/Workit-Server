@@ -1,6 +1,7 @@
 package workit.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class WorkAbility extends TimeStamped {
 
     @Id
@@ -26,5 +28,10 @@ public class WorkAbility extends TimeStamped {
     private Ability ability;
 
     @Column
-    private boolean isDeleted;
+    private boolean isDeleted = false;
+
+    public WorkAbility(Work work, Ability ability) {
+        this.work = work;
+        this.ability = ability;
+    }
 }
