@@ -21,28 +21,28 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<ResponseMessage> getUserInfo(HttpServletRequest request) {
-        String email = request.getUserPrincipal().getName();
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
         return ResponseMessage.toResponseEntity(
                 ResponseCode.GET_USER_INFO_SUCCESS,
-                userService.getUserInfo(email)
+                userService.getUserInfo(userId)
         );
     }
 
     @GetMapping("/nickname")
     public ResponseEntity<ResponseMessage> getUserNickname(HttpServletRequest request) {
-        String email = request.getUserPrincipal().getName();
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
         return ResponseMessage.toResponseEntity(
                 ResponseCode.GET_USER_INFO_SUCCESS,
-                userService.getUserNickname(email)
+                userService.getUserNickname(userId)
         );
     }
 
     @DeleteMapping
     public ResponseEntity<ResponseNonDataMessage> deleteUser(HttpServletRequest request) {
-        String email = request.getUserPrincipal().getName();
-        userService.deleteUser(email);
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+        userService.deleteUser(userId);
 
         return ResponseNonDataMessage.toResponseEntity(
                 ResponseCode.DELETE_USER_SUCCESS

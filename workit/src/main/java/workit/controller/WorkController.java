@@ -21,32 +21,32 @@ public class WorkController {
     @GetMapping("/date")
     public ResponseEntity<ResponseMessage> getAllWorksByDateFilter(
             @RequestParam("start") String start, @RequestParam("end") String end, HttpServletRequest request) {
-        String email = request.getUserPrincipal().getName();
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
         return ResponseMessage.toResponseEntity(
                 ResponseCode.GET_ALL_WORKIT_SUCCESS,
-                workService.getWorksByDateFilter(email, start, end)
+                workService.getWorksByDateFilter(userId, start, end)
         );
     }
 
     @GetMapping
     public ResponseEntity<ResponseMessage> getAllWorks(HttpServletRequest request) {
-        String email = request.getUserPrincipal().getName();
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
         return ResponseMessage.toResponseEntity(
                 ResponseCode.GET_ALL_WORKIT_SUCCESS,
-                workService.getWorks(email)
+                workService.getWorks(userId)
         );
     }
 
     @PostMapping
     public ResponseEntity<ResponseMessage> createWork(
             @Valid @RequestBody WorkCreateRequestDto requestDto, HttpServletRequest request) {
-        String email = request.getUserPrincipal().getName();
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
         return ResponseMessage.toResponseEntity(
                 ResponseCode.WORK_CREATE_SUCCESS,
-                workService.createWork(requestDto, email)
+                workService.createWork(requestDto, userId)
         );
     }
 
@@ -54,18 +54,18 @@ public class WorkController {
     public ResponseEntity<ResponseMessage> modifyWork(
             @Valid @RequestBody WorkCreateRequestDto requestDto, @PathVariable Long workId, HttpServletRequest request
     ) {
-        String email = request.getUserPrincipal().getName();
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
         return ResponseMessage.toResponseEntity(
                 ResponseCode.WORK_MODIFY_SUCCESS,
-                workService.modifyWork(requestDto, workId, email)
+                workService.modifyWork(requestDto, workId, userId)
         );
     }
 
     @DeleteMapping("/{workId}")
     public ResponseEntity<ResponseNonDataMessage> deleteWork(@PathVariable Long workId, HttpServletRequest request) {
-        String email = request.getUserPrincipal().getName();
-        workService.deleteWork(workId, email);
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+        workService.deleteWork(workId, userId);
 
         return ResponseNonDataMessage.toResponseEntity(ResponseCode.DELETE_WORK_SUCCESS);
     }

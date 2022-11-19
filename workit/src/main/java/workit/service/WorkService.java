@@ -26,8 +26,8 @@ public class WorkService {
     private final WorkAbilityRepository workAbilityRepository;
     private final AbilityRepository abilityRepository;
 
-    public AllWorkResponseDto getWorksByDateFilter(String email, String start, String end) {
-        User user = userRepository.findByEmail(email).orElseThrow(
+    public AllWorkResponseDto getWorksByDateFilter(Long userId, String start, String end) {
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
@@ -59,8 +59,8 @@ public class WorkService {
         }
     }
 
-    public AllWorkResponseDto getWorks(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(
+    public AllWorkResponseDto getWorks(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
@@ -77,8 +77,8 @@ public class WorkService {
         return new AllWorkResponseDto(workResponseDtos);
     }
 
-    public WorkCreateResponseDto createWork(WorkCreateRequestDto request, String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(
+    public WorkCreateResponseDto createWork(WorkCreateRequestDto request, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
@@ -105,8 +105,8 @@ public class WorkService {
         return new WorkCreateResponseDto(work);
     }
 
-    public WorkCreateResponseDto modifyWork(WorkCreateRequestDto request, Long workId, String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(
+    public WorkCreateResponseDto modifyWork(WorkCreateRequestDto request, Long workId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
@@ -134,8 +134,8 @@ public class WorkService {
         return new WorkCreateResponseDto(work);
     }
 
-    public void deleteWork(Long workId, String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(
+    public void deleteWork(Long workId, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
