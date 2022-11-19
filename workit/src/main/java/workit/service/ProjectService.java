@@ -92,13 +92,14 @@ public class ProjectService {
         List<Project> projects = projectRepository.findAllByUser(user);
         List<ProjectResponseDto> responseDtos = new ArrayList<>();
 
-        projects.forEach(project -> {
-            ProjectResponseDto responseDto = new ProjectResponseDto(project);
-            responseDtos.add(responseDto);
-        });
+        projects.stream()
+                .sorted(Comparator.comparing(Project::getTitle))
+                .forEach(project -> {
+                    ProjectResponseDto responseDto = new ProjectResponseDto(project);
+                    responseDtos.add(responseDto);
+                });
 
-        return responseDtos.stream().sorted(Comparator.comparing(ProjectResponseDto::getTitle))
-                .collect(Collectors.toList());
+        return responseDtos;
     }
 
     private Project validateUserProject(Long userId, Long projectId) {
