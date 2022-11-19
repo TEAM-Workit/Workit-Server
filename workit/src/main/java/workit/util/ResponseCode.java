@@ -33,6 +33,7 @@ public enum ResponseCode {
     MODIFY_PROJECT_SUCCESS(HttpStatus.OK, true, "프로젝트 수정 성공"),
     DELETE_PROJECT_SUCCESS(HttpStatus.OK, true, "프로젝트 삭제 성공"),
     GET_PROJECTS_SUCCESS(HttpStatus.OK, true, "모든 프로젝트 조회 성공"),
+    GET_RECENT_PROJECTS_SUCCESS(HttpStatus.OK, true, "최근 프로젝트 조회 성공"),
 
 
     // work
