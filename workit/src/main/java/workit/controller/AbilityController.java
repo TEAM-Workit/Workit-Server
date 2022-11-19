@@ -18,7 +18,7 @@ public class AbilityController {
     private final AbilityService abilityService;
 
     @GetMapping
-    public ResponseEntity<ResponseMessage> getAllWorks(HttpServletRequest request) {
+    public ResponseEntity<ResponseMessage> getAllWorks() {
         return ResponseMessage.toResponseEntity(
                 ResponseCode.GET_ALL_ABILITY_SUCCESS,
                 abilityService.getAllAbilities()

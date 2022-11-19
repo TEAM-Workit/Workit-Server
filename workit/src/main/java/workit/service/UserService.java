@@ -16,24 +16,24 @@ import workit.util.ResponseCode;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserInfoResponseDto getUserInfo(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(
+    public UserInfoResponseDto getUserInfo(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
         return new UserInfoResponseDto(user.getEmail(), user.getNickname());
     }
 
-    public UserNicknameResponseDto getUserNickname(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(
+    public UserNicknameResponseDto getUserNickname(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
         return new UserNicknameResponseDto(user.getNickname());
     }
 
-    public void deleteUser(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
