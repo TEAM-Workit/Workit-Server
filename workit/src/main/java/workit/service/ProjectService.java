@@ -57,12 +57,7 @@ public class ProjectService {
     public ProjectResponseDto modifyProject(Long userId, Long projectId, ProjectRequestDto request) {
         String title = request.getTitle();
 
-        userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ResponseCode.USER_NOT_FOUND));
-
-        Project project = projectRepository.findByUserIdAndId(userId, projectId).orElseThrow(
-                () -> new CustomException(ResponseCode.NOT_USER_PROJECT)
-        );
+        Project project = validateUserProject(userId, projectId);
 
         validateProjectTitleNull(title);
         validateProjectTitleLength(title);
@@ -85,7 +80,7 @@ public class ProjectService {
         projectRepository.delete(project);
     }
 
-    public Project validateUserProject(Long userId, Long projectId) {
+    private Project validateUserProject(Long userId, Long projectId) {
         userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND));
 
