@@ -34,8 +34,9 @@ public class Project extends TimeStamped {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     List<Work> works = new ArrayList<>();
 
-    public Project(String title, User user) {
-        this.title = title;
+    public Project(User user,String title) {
         this.user = user;
+        this.title = title;
+
     }
 }
