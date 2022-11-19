@@ -79,4 +79,21 @@ public class ProjectService {
                 project.getTitle()
         );
     }
+
+    public void deleteProject(Long userId, Long projectId) {
+        Project project = validateUserProject(userId, projectId);
+        projectRepository.delete(project);
+    }
+
+    public Project validateUserProject(Long userId, Long projectId) {
+        userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.USER_NOT_FOUND));
+
+        projectRepository.findById(projectId).orElseThrow(
+                () -> new CustomException(ResponseCode.PROJECT_NOT_FOUND));
+
+        return projectRepository.findByUserIdAndId(userId, projectId).orElseThrow(
+                () -> new CustomException(ResponseCode.NOT_USER_PROJECT)
+        );
+    }
 }

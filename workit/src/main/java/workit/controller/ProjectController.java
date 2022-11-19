@@ -7,6 +7,7 @@ import workit.dto.project.ProjectRequestDto;
 import workit.service.ProjectService;
 import workit.util.ResponseCode;
 import workit.util.ResponseMessage;
+import workit.util.ResponseNonDataMessage;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -39,6 +40,18 @@ public class ProjectController {
         return ResponseMessage.toResponseEntity(
                 ResponseCode.MODIFY_PROJECT_SUCCESS,
                 projectService.modifyProject(userId, projectId, projectRequestDto)
+        );
+    }
+
+    @DeleteMapping("/{projectId}")
+    public ResponseEntity<ResponseNonDataMessage> deleteProject(@PathVariable Long projectId, HttpServletRequest request) {
+
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+
+        projectService.deleteProject(userId, projectId);
+
+        return ResponseNonDataMessage.toResponseEntity(
+                ResponseCode.DELETE_PROJECT_SUCCESS
         );
     }
 }
