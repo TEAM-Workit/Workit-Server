@@ -151,7 +151,7 @@ public class WorkService {
         return projectRepository.findByUserAndTitle(user, projectTitle)
                 .orElseGet(() -> {
                     Validator.validateProjectTitleLength(projectTitle);
-                    Project proj = new Project(projectTitle, user);
+                    Project proj = new Project(user, projectTitle);
                     projectRepository.save(proj);
                     return proj;
                 });

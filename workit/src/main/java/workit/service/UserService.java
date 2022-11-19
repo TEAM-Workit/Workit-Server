@@ -37,7 +37,6 @@ public class UserService {
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
-        user.setDeleted(true);
-        userRepository.save(user);
+        userRepository.delete(user);
     }
 }

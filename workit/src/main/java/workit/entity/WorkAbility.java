@@ -27,9 +27,6 @@ public class WorkAbility extends TimeStamped {
     @JoinColumn(name = "ability_id")
     private Ability ability;
 
-    @Column
-    private boolean isDeleted = false;
-
     public WorkAbility(Work work, Ability ability) {
         this.work = work;
         this.ability = ability;

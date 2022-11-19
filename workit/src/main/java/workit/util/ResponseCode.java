@@ -26,6 +26,15 @@ public enum ResponseCode {
 
     // project
     INVALID_PROJECT_TITLE_LENGTH(HttpStatus.BAD_REQUEST, false, "30자 이하의 프로젝트 제목으로 설정해주세요."),
+    ALREADY_EXIST_PROJECT_TITLE(HttpStatus.BAD_REQUEST, false, "이미 생성된 프로젝트입니다"),
+    NOT_USER_PROJECT(HttpStatus.BAD_REQUEST, false, "유저에 해당하는 프로젝트가 존재하지 않습니다"),
+    PROJECT_NOT_FOUND(HttpStatus.BAD_REQUEST, false, "해당 프로젝트가 존재하지 않습니다"),
+    CREATE_PROJECT_SUCCESS(HttpStatus.CREATED, true, "프로젝트 생성 성공"),
+    MODIFY_PROJECT_SUCCESS(HttpStatus.OK, true, "프로젝트 수정 성공"),
+    DELETE_PROJECT_SUCCESS(HttpStatus.OK, true, "프로젝트 삭제 성공"),
+    GET_PROJECTS_SUCCESS(HttpStatus.OK, true, "모든 프로젝트 조회 성공"),
+    GET_RECENT_PROJECTS_SUCCESS(HttpStatus.OK, true, "최근 프로젝트 조회 성공"),
+
 
     // work
     GET_ALL_WORKIT_SUCCESS(HttpStatus.OK, true, "전체 워킷 조회 성공"),

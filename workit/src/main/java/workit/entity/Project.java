@@ -28,14 +28,12 @@ public class Project extends TimeStamped {
     @Column(length = 30)
     private String title;
 
-    @Column
-    private boolean isDeleted = false;
-
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     List<Work> works = new ArrayList<>();
 
-    public Project(String title, User user) {
-        this.title = title;
+    public Project(User user,String title) {
         this.user = user;
+        this.title = title;
+
     }
 }
