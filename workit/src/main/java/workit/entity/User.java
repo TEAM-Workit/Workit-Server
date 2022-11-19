@@ -34,9 +34,6 @@ public class User extends TimeStamped implements UserDetails {
     @Column(length = 50)
     private String email;
 
-    @Column
-    private boolean isDeleted = false;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Project> projects = new ArrayList<>();
 

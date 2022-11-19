@@ -38,9 +38,6 @@ public class Work extends TimeStamped {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
 
-    @Column
-    private boolean isDeleted = false;
-
     @OneToMany(mappedBy = "work", cascade = CascadeType.ALL)
     private List<WorkAbility> workAbilities = new ArrayList<>();
 
