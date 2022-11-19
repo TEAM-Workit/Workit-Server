@@ -2,10 +2,7 @@ package workit.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import workit.dto.project.ProjectRequestDto;
 import workit.service.ProjectService;
 import workit.util.ResponseCode;
@@ -30,6 +27,18 @@ public class ProjectController {
         return ResponseMessage.toResponseEntity(
                 ResponseCode.CREATE_PROJECT_SUCCESS,
                 projectService.createProject(projectRequestDto, userId)
+        );
+    }
+
+    @PatchMapping("/{projectId}")
+    public ResponseEntity<ResponseMessage> modifyProject(@PathVariable Long projectId,
+                                                         @Valid @RequestBody ProjectRequestDto projectRequestDto, HttpServletRequest request) {
+
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.MODIFY_PROJECT_SUCCESS,
+                projectService.modifyProject(userId, projectId, projectRequestDto)
         );
     }
 }

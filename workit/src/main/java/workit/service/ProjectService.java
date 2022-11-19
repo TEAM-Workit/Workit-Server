@@ -53,4 +53,30 @@ public class ProjectService {
                 project.getTitle()
         );
     }
+
+    public ProjectResponseDto modifyProject(Long userId, Long projectId, ProjectRequestDto request) {
+        String title = request.getTitle();
+
+        userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.USER_NOT_FOUND));
+
+        Project project = projectRepository.findByUserIdAndId(userId, projectId).orElseThrow(
+                () -> new CustomException(ResponseCode.NOT_USER_PROJECT)
+        );
+
+        validateProjectTitleNull(title);
+        validateProjectTitleLength(title);
+
+        Optional<Project> existProject = projectRepository.findByUserIdAndTitle(userId, title);
+        if (existProject.isPresent() && !project.getTitle().equals(title)) {
+            throw new CustomException(ResponseCode.ALREADY_EXIST_PROJECT_TITLE);
+        }
+        project.setTitle(title);
+        projectRepository.save(project);
+
+        return new ProjectResponseDto(
+                project.getId(),
+                project.getTitle()
+        );
+    }
 }

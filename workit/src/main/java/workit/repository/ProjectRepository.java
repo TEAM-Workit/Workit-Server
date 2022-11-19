@@ -13,4 +13,5 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findAllByUser(User user);
     Optional<Project> findByUserAndTitle(User user, String title);
     Optional<Project> findByUserIdAndTitle(Long userId, String title);
+    Optional<Project> findByUserIdAndId(Long userId, Long projectId);
 }
