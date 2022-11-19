@@ -54,4 +54,15 @@ public class ProjectController {
                 ResponseCode.DELETE_PROJECT_SUCCESS
         );
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseMessage> getProjects(HttpServletRequest request) {
+
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.GET_PROJECTS_SUCCESS,
+                projectService.getProjects(userId)
+        );
+    }
 }

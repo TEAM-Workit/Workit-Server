@@ -12,7 +12,11 @@ import workit.repository.UserRepository;
 import workit.util.CustomException;
 import workit.util.ResponseCode;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static workit.validator.Validator.validateProjectTitleLength;
 import static workit.validator.Validator.validateProjectTitleNull;
@@ -78,6 +82,23 @@ public class ProjectService {
     public void deleteProject(Long userId, Long projectId) {
         Project project = validateUserProject(userId, projectId);
         projectRepository.delete(project);
+    }
+
+    public List<ProjectResponseDto> getProjects(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.USER_NOT_FOUND)
+        );
+
+        List<Project> projects = projectRepository.findAllByUser(user);
+        List<ProjectResponseDto> responseDtos = new ArrayList<>();
+
+        projects.forEach(project -> {
+            ProjectResponseDto responseDto = new ProjectResponseDto(project);
+            responseDtos.add(responseDto);
+        });
+
+        return responseDtos.stream().sorted(Comparator.comparing(ProjectResponseDto::getTitle))
+                .collect(Collectors.toList());
     }
 
     private Project validateUserProject(Long userId, Long projectId) {
