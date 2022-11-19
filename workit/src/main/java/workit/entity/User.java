@@ -55,7 +55,7 @@ public class User extends TimeStamped implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return String.valueOf(id);
     }
 
     @Override
