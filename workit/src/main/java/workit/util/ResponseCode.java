@@ -52,7 +52,8 @@ public enum ResponseCode {
     GET_ALL_ABILITY_SUCCESS(HttpStatus.OK, true, "전체 역량 태그 조회 성공"),
 
     // collection
-    GET_PROJECT_COLLECTION(HttpStatus.OK, true, "프로젝트 모아보기 조회 성공");
+    GET_PROJECT_COLLECTION(HttpStatus.OK, true, "프로젝트 모아보기 조회 성공"),
+    GET_PROJECT_COLLECTION_DETAIL(HttpStatus.OK, true, "프로젝트 모아보기 상세 조회 성공");
 
     private final HttpStatus httpStatus;
     private final Boolean success;

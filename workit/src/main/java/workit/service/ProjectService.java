@@ -3,9 +3,7 @@ package workit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import workit.dto.project.ProjectCollectionResponseDto;
-import workit.dto.project.ProjectRequestDto;
-import workit.dto.project.ProjectResponseDto;
+import workit.dto.project.*;
 import workit.entity.Project;
 import workit.entity.User;
 import workit.entity.Work;
@@ -148,11 +146,28 @@ public class ProjectService {
         projects.stream()
                 .sorted(Comparator.comparing(Project::getTitle))
                 .forEach(project -> {
-                    List<Work> works = workRepository.findAllByProject(project);
-                    ProjectCollectionResponseDto responseDto = new ProjectCollectionResponseDto(project, works.size());
+                    ProjectCollectionResponseDto responseDto = new ProjectCollectionResponseDto(project);
                     responseDtos.add(responseDto);
                 });
 
         return responseDtos;
+    }
+
+    public AllProjectCollectionDetailResponseDto getProjectCollectionDetail(Long userId, Long projectId) {
+        Project project = validateUserProject(userId, projectId);
+
+        List<ProjectCollectionDetailResponseDto> works = new ArrayList<>();
+        List<Work> projectWorks = workRepository.findAllByProject(project);
+
+
+        projectWorks.stream()
+                .sorted(Comparator.comparing(Work::getDate)
+                        .thenComparing(Comparator.comparing(Work::getCreatedAt).reversed()))
+                .forEach(work -> {
+                    ProjectCollectionDetailResponseDto responseDto = new ProjectCollectionDetailResponseDto(work);
+                    works.add(responseDto);
+                });
+
+        return new AllProjectCollectionDetailResponseDto(project.getTitle(), works);
     }
 }
