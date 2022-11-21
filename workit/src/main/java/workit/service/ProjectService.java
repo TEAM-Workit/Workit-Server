@@ -3,7 +3,11 @@ package workit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import workit.dto.project.*;
+import workit.dto.collection.CollectionDetailResponseDto;
+import workit.dto.project.AllProjectCollectionDetailResponseDto;
+import workit.dto.project.ProjectCollectionResponseDto;
+import workit.dto.project.ProjectRequestDto;
+import workit.dto.project.ProjectResponseDto;
 import workit.entity.Project;
 import workit.entity.User;
 import workit.entity.Work;
@@ -152,11 +156,25 @@ public class ProjectService {
         return responseDtos;
     }
 
+    static List<CollectionDetailResponseDto> sortCollection(List<Work> works) {
+        List<CollectionDetailResponseDto> responseWorks = new ArrayList<>();
+
+        works.stream()
+                .sorted(Comparator.comparing(Work::getDate)
+                        .thenComparing(Comparator.comparing(Work::getCreatedAt).reversed()))
+                .forEach(work -> {
+                    CollectionDetailResponseDto responseDto = new CollectionDetailResponseDto(work);
+                    responseWorks.add(responseDto);
+                });
+
+        return responseWorks;
+    }
+
     public AllProjectCollectionDetailResponseDto getProjectCollectionDetail(Long userId, Long projectId) {
         Project project = validateUserProject(userId, projectId);
-        List<Work> projectWorks = workRepository.findByProject(project);
+        List<Work> works = workRepository.findByProject(project);
 
-        return sortWorkCollection(projectWorks);
+        return new AllProjectCollectionDetailResponseDto(works.get(0).getProject().getTitle(), sortCollection(works));
     }
 
     public AllProjectCollectionDetailResponseDto getProjectCollectionDetailByDateFilter
@@ -178,22 +196,8 @@ public class ProjectService {
         cal.add(Calendar.DATE, 1);
         Date endPlusOne = cal.getTime();
 
-        List<Work> projectWorks = workRepository.findByProjectAndDateBetween(project, startDate, endPlusOne);
+        List<Work> works = workRepository.findByProjectAndDateBetween(project, startDate, endPlusOne);
 
-        return sortWorkCollection(projectWorks);
-    }
-
-    private AllProjectCollectionDetailResponseDto sortWorkCollection(List<Work> projectWorks) {
-        List<ProjectCollectionDetailResponseDto> works = new ArrayList<>();
-
-        projectWorks.stream()
-                .sorted(Comparator.comparing(Work::getDate)
-                        .thenComparing(Comparator.comparing(Work::getCreatedAt).reversed()))
-                .forEach(work -> {
-                    ProjectCollectionDetailResponseDto responseDto = new ProjectCollectionDetailResponseDto(work);
-                    works.add(responseDto);
-                });
-
-        return new AllProjectCollectionDetailResponseDto(projectWorks.get(0).getProject().getTitle(), works);
+        return new AllProjectCollectionDetailResponseDto(works.get(0).getProject().getTitle(), sortCollection(works));
     }
 }
