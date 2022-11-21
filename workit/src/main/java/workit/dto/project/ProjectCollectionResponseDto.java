@@ -11,10 +11,10 @@ public class ProjectCollectionResponseDto {
     private String title;
     private Integer count;
 
-    public ProjectCollectionResponseDto(Project project, int count) {
+    public ProjectCollectionResponseDto(Project project) {
         this.id = project.getId();
         this.title = project.getTitle();
-        this.count = count;
+        this.count = project.getWorks().size();
     }
 }
 
