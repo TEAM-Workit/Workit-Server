@@ -49,7 +49,12 @@ public enum ResponseCode {
     INVALID_DATE_TYPE(HttpStatus.BAD_REQUEST, false, "올바른 날짜 형식이 아닙니다."),
 
     // ability
-    GET_ALL_ABILITY_SUCCESS(HttpStatus.OK, true, "전체 역량 태그 조회 성공");
+    GET_ALL_ABILITY_SUCCESS(HttpStatus.OK, true, "전체 역량 태그 조회 성공"),
+
+    // collection
+    GET_PROJECT_COLLECTION(HttpStatus.OK, true, "프로젝트 모아보기 조회 성공"),
+    GET_PROJECT_COLLECTION_DETAIL(HttpStatus.OK, true, "프로젝트 모아보기 상세 조회 성공"),
+    GET_PROJECT_COLLECTION_DETAIL_BY_DATE_FILTER(HttpStatus.OK, true, "기간별 프로젝트 모아보기 상세 조회 성공");
 
     private final HttpStatus httpStatus;
     private final Boolean success;

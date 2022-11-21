@@ -76,4 +76,39 @@ public class ProjectController {
                 projectService.getRecentProjects(userId)
         );
     }
+
+    @GetMapping("/collection")
+    public ResponseEntity<ResponseMessage> getProjectCollection(HttpServletRequest request) {
+
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.GET_PROJECT_COLLECTION,
+                projectService.getProjectCollection(userId)
+        );
+    }
+
+    @GetMapping("/{projectId}/collection")
+    public ResponseEntity<ResponseMessage> getProjectCollectionDetail(@PathVariable Long projectId, HttpServletRequest request) {
+
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.GET_PROJECT_COLLECTION_DETAIL,
+                projectService.getProjectCollectionDetail(userId, projectId)
+        );
+    }
+
+    @GetMapping("/{projectId}/collection/date")
+    public ResponseEntity<ResponseMessage> getProjectCollectionDetailByDateFilter(@PathVariable Long projectId,
+                                                                      @RequestParam("start") String start, @RequestParam("end") String end,
+                                                                      HttpServletRequest request) {
+
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.GET_PROJECT_COLLECTION_DETAIL_BY_DATE_FILTER,
+                projectService.getProjectCollectionDetailByDateFilter(userId, projectId, start, end)
+        );
+    }
 }
