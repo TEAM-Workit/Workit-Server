@@ -42,7 +42,7 @@ public class WorkService {
             String endPlusOne = simpleDateFormat.format(calendar.getTime());
             Date finalEndDate = simpleDateFormat.parse(endPlusOne);
 
-            List<Project> projects = projectRepository.findAllByUser(user);
+            List<Project> projects = projectRepository.findByUser(user);
             List<WorkResponseDto> workResponseDtos = new ArrayList<>();
             projects.forEach(project -> {
                 workRepository.findByProject(project).stream()
@@ -64,7 +64,7 @@ public class WorkService {
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
-        List<Project> projects = projectRepository.findAllByUser(user);
+        List<Project> projects = projectRepository.findByUser(user);
         List<WorkResponseDto> workResponseDtos = new ArrayList<>();
         projects.forEach(project -> {
             workRepository.findByProject(project)

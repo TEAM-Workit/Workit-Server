@@ -90,7 +90,7 @@ public class ProjectService {
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
-        List<Project> projects = projectRepository.findAllByUser(user);
+        List<Project> projects = projectRepository.findByUser(user);
         List<ProjectResponseDto> responseDtos = new ArrayList<>();
 
         projects.stream()
@@ -108,7 +108,7 @@ public class ProjectService {
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
-        List<Project> projects = projectRepository.findAllByUser(user);
+        List<Project> projects = projectRepository.findByUser(user);
         List<ProjectResponseDto> responseDtos = new ArrayList<>();
 
         projects.stream()
@@ -139,7 +139,7 @@ public class ProjectService {
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
-        List<Project> projects = projectRepository.findAllByUser(user);
+        List<Project> projects = projectRepository.findByUser(user);
         List<ProjectCollectionResponseDto> responseDtos = new ArrayList<>();
 
         projects.stream()
