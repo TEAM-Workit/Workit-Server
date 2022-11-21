@@ -13,10 +13,9 @@ import workit.repository.WorkRepository;
 import workit.util.CustomException;
 import workit.util.ResponseCode;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static workit.validator.Validator.validateProjectTitleLength;
 import static workit.validator.Validator.validateProjectTitleNull;
@@ -155,6 +154,11 @@ public class ProjectService {
 
     public AllProjectCollectionDetailResponseDto getProjectCollectionDetail(Long userId, Long projectId) {
         Project project = validateUserProject(userId, projectId);
+        List<Work> projectWorks = workRepository.findByProject(project);
+
+        return sortWorkCollection(projectWorks);
+    }
+
     public AllProjectCollectionDetailResponseDto getProjectCollectionDetailByDateFilter
             (Long userId, Long projectId, String start, String end) {
         Project project = validateUserProject(userId, projectId);
