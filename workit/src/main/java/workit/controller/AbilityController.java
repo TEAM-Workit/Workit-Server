@@ -3,6 +3,7 @@ package workit.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import workit.service.AbilityService;
@@ -35,6 +36,17 @@ public class AbilityController {
         return ResponseMessage.toResponseEntity(
                 ResponseCode.GET_ABILITY_COLLECTION,
                 abilityService.getAbilityCollection(userId)
+        );
+    }
+
+    @GetMapping("/{abilityId}/collection")
+    public ResponseEntity<ResponseMessage> getAbilityCollectionDetail(@PathVariable Long abilityId, HttpServletRequest request) {
+
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.GET_PROJECT_COLLECTION_DETAIL,
+                abilityService.getAbilityCollectionDetail(userId, abilityId)
         );
     }
 }

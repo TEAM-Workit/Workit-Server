@@ -6,16 +6,16 @@ import org.springframework.transaction.annotation.Transactional;
 import workit.dto.ability.AbilityCollectionResponseDto;
 import workit.dto.ability.AbilityInfo;
 import workit.dto.ability.AllAbilitiesResponseDto;
+import workit.dto.ability.AllAbilityCollectionDetailResponseDto;
 import workit.entity.*;
 import workit.repository.*;
 import workit.util.CustomException;
 import workit.util.ResponseCode;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static workit.service.ProjectService.sortCollection;
 
 @Service
 @Transactional
@@ -42,7 +42,7 @@ public class AbilityService {
 
 
         List<Project> projects = projectRepository.findByUser(user);
-        HashMap<Long, Integer> abilityCount = new HashMap<>();
+        Map<Long, Integer> abilityCount = new HashMap<>();
 
         projects.forEach(project -> {
             List<Work> works = workRepository.findByProject(project);
@@ -71,5 +71,34 @@ public class AbilityService {
                 });
 
         return responseDtos;
+    }
+
+    public AllAbilityCollectionDetailResponseDto getAbilityCollectionDetail(Long userId, Long abilityId) {
+        Ability ability = validateUserAndAbility(userId, abilityId);
+
+        List<WorkAbility> workAbilities = workAbilityRepository.findByAbility(ability);
+        Set<Long> workIds = new HashSet<>();
+
+        workAbilities.forEach(workAbility -> {
+            Work work = workAbility.getWork();
+            workIds.add(work.getId());
+        });
+
+        List<Work> works = workRepository.findAllById(workIds);
+
+        if (works.size() == 0) {
+            throw new CustomException(ResponseCode.NOT_ABILITY_PROJECT);
+        }
+
+        return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(works));
+    }
+
+    private Ability validateUserAndAbility(Long userId, Long abilityId) {
+        userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.USER_NOT_FOUND));
+
+        return abilityRepository.findById(abilityId).orElseThrow(
+                () -> new CustomException(ResponseCode.ABILITY_NOT_FOUND)
+        );
     }
 }
