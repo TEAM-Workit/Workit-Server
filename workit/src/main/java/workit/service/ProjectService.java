@@ -155,10 +155,32 @@ public class ProjectService {
 
     public AllProjectCollectionDetailResponseDto getProjectCollectionDetail(Long userId, Long projectId) {
         Project project = validateUserProject(userId, projectId);
+    public AllProjectCollectionDetailResponseDto getProjectCollectionDetailByDateFilter
+            (Long userId, Long projectId, String start, String end) {
+        Project project = validateUserProject(userId, projectId);
 
+        Date startDate, endDate;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+
+        try {
+            startDate = simpleDateFormat.parse(start);
+            endDate = simpleDateFormat.parse(end);
+        } catch (ParseException e) {
+            throw new CustomException(ResponseCode.INVALID_DATE_TYPE);
+        }
+
+        cal.setTime(endDate);
+        cal.add(Calendar.DATE, 1);
+        Date endPlusOne = cal.getTime();
+
+        List<Work> projectWorks = workRepository.findByProjectAndDateBetween(project, startDate, endPlusOne);
+
+        return sortWorkCollection(projectWorks);
+    }
+
+    private AllProjectCollectionDetailResponseDto sortWorkCollection(List<Work> projectWorks) {
         List<ProjectCollectionDetailResponseDto> works = new ArrayList<>();
-        List<Work> projectWorks = workRepository.findAllByProject(project);
-
 
         projectWorks.stream()
                 .sorted(Comparator.comparing(Work::getDate)
@@ -168,6 +190,6 @@ public class ProjectService {
                     works.add(responseDto);
                 });
 
-        return new AllProjectCollectionDetailResponseDto(project.getTitle(), works);
+        return new AllProjectCollectionDetailResponseDto(projectWorks.get(0).getProject().getTitle(), works);
     }
 }

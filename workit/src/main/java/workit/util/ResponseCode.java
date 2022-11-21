@@ -53,7 +53,8 @@ public enum ResponseCode {
 
     // collection
     GET_PROJECT_COLLECTION(HttpStatus.OK, true, "프로젝트 모아보기 조회 성공"),
-    GET_PROJECT_COLLECTION_DETAIL(HttpStatus.OK, true, "프로젝트 모아보기 상세 조회 성공");
+    GET_PROJECT_COLLECTION_DETAIL(HttpStatus.OK, true, "프로젝트 모아보기 상세 조회 성공"),
+    GET_PROJECT_COLLECTION_DETAIL_BY_DATE_FILTER(HttpStatus.OK, true, "기간별 프로젝트 모아보기 상세 조회 성공");
 
     private final HttpStatus httpStatus;
     private final Boolean success;

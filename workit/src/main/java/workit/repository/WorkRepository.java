@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface WorkRepository extends JpaRepository<Work, Long> {
     List<Work> findAllByProject(Project project);
+    List<Work> findByProjectAndDateBetween(Project project, Date start, Date end);
 }
