@@ -24,4 +24,17 @@ public class AbilityController {
                 abilityService.getAllAbilities()
         );
     }
+
+    @GetMapping("/collection")
+    public ResponseEntity<ResponseMessage> getAbilityCollection(HttpServletRequest request) {
+
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+
+
+        abilityService.getAbilityCollection(userId);
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.GET_ABILITY_COLLECTION,
+                abilityService.getAbilityCollection(userId)
+        );
+    }
 }

@@ -50,6 +50,7 @@ public enum ResponseCode {
 
     // ability
     GET_ALL_ABILITY_SUCCESS(HttpStatus.OK, true, "전체 역량 태그 조회 성공"),
+    GET_ABILITY_COLLECTION(HttpStatus.OK, true, "역량 모아보기 조회 성공"),
 
     // collection
     GET_PROJECT_COLLECTION(HttpStatus.OK, true, "프로젝트 모아보기 조회 성공"),
