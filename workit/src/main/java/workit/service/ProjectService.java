@@ -3,12 +3,15 @@ package workit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import workit.dto.project.ProjectCollectionResponseDto;
 import workit.dto.project.ProjectRequestDto;
 import workit.dto.project.ProjectResponseDto;
 import workit.entity.Project;
 import workit.entity.User;
+import workit.entity.Work;
 import workit.repository.ProjectRepository;
 import workit.repository.UserRepository;
+import workit.repository.WorkRepository;
 import workit.util.CustomException;
 import workit.util.ResponseCode;
 
@@ -16,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static workit.validator.Validator.validateProjectTitleLength;
 import static workit.validator.Validator.validateProjectTitleNull;
@@ -27,6 +29,8 @@ import static workit.validator.Validator.validateProjectTitleNull;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+
+    private final WorkRepository workRepository;
     private final UserRepository userRepository;
 
     public ProjectResponseDto createProject(ProjectRequestDto request, Long userId) {
@@ -131,5 +135,24 @@ public class ProjectService {
         return projectRepository.findByUserIdAndId(userId, projectId).orElseThrow(
                 () -> new CustomException(ResponseCode.NOT_USER_PROJECT)
         );
+    }
+
+    public List<ProjectCollectionResponseDto> getProjectCollection(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.USER_NOT_FOUND)
+        );
+
+        List<Project> projects = projectRepository.findAllByUser(user);
+        List<ProjectCollectionResponseDto> responseDtos = new ArrayList<>();
+
+        projects.stream()
+                .sorted(Comparator.comparing(Project::getTitle))
+                .forEach(project -> {
+                    List<Work> works = workRepository.findAllByProject(project);
+                    ProjectCollectionResponseDto responseDto = new ProjectCollectionResponseDto(project, works.size());
+                    responseDtos.add(responseDto);
+                });
+
+        return responseDtos;
     }
 }

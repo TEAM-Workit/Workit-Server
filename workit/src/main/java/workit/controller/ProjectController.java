@@ -76,4 +76,15 @@ public class ProjectController {
                 projectService.getRecentProjects(userId)
         );
     }
+
+    @GetMapping("/collection")
+    public ResponseEntity<ResponseMessage> getProjectCollection(HttpServletRequest request) {
+
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.GET_PROJECT_COLLECTION,
+                projectService.getProjectCollection(userId)
+        );
+    }
 }
