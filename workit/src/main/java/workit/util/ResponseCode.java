@@ -50,11 +50,16 @@ public enum ResponseCode {
 
     // ability
     GET_ALL_ABILITY_SUCCESS(HttpStatus.OK, true, "전체 역량 태그 조회 성공"),
+    GET_ABILITY_COLLECTION(HttpStatus.OK, true, "역량 모아보기 조회 성공"),
+    GET_ABILITY_COLLECTION_DETAIL(HttpStatus.OK, true, "역량 모아보기 상세 조회 성공"),
+    ABILITY_NOT_FOUND(HttpStatus.OK, true, "해당 역량이 존재하지 않습니다"),
+    NOT_ABILITY_PROJECT(HttpStatus.BAD_REQUEST, false, "유저에 해당하는 역량이 존재하지 않습니다"),
 
     // collection
     GET_PROJECT_COLLECTION(HttpStatus.OK, true, "프로젝트 모아보기 조회 성공"),
     GET_PROJECT_COLLECTION_DETAIL(HttpStatus.OK, true, "프로젝트 모아보기 상세 조회 성공"),
-    GET_PROJECT_COLLECTION_DETAIL_BY_DATE_FILTER(HttpStatus.OK, true, "기간별 프로젝트 모아보기 상세 조회 성공");
+    GET_PROJECT_COLLECTION_DETAIL_BY_DATE_FILTER(HttpStatus.OK, true, "기간별 프로젝트 모아보기 상세 조회 성공"),
+    GET_ABILITY_COLLECTION_DETAIL_BY_DATE_FILTER(HttpStatus.OK, true, "기간별 역량 모아보기 상세 조회 성공");
 
     private final HttpStatus httpStatus;
     private final Boolean success;

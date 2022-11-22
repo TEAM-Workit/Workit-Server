@@ -3,7 +3,11 @@ package workit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import workit.dto.project.*;
+import workit.dto.collection.CollectionDetailResponseDto;
+import workit.dto.project.AllProjectCollectionDetailResponseDto;
+import workit.dto.project.ProjectCollectionResponseDto;
+import workit.dto.project.ProjectRequestDto;
+import workit.dto.project.ProjectResponseDto;
 import workit.entity.Project;
 import workit.entity.User;
 import workit.entity.Work;
@@ -90,7 +94,7 @@ public class ProjectService {
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
-        List<Project> projects = projectRepository.findAllByUser(user);
+        List<Project> projects = projectRepository.findByUser(user);
         List<ProjectResponseDto> responseDtos = new ArrayList<>();
 
         projects.stream()
@@ -108,7 +112,7 @@ public class ProjectService {
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
-        List<Project> projects = projectRepository.findAllByUser(user);
+        List<Project> projects = projectRepository.findByUser(user);
         List<ProjectResponseDto> responseDtos = new ArrayList<>();
 
         projects.stream()
@@ -139,7 +143,7 @@ public class ProjectService {
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
-        List<Project> projects = projectRepository.findAllByUser(user);
+        List<Project> projects = projectRepository.findByUser(user);
         List<ProjectCollectionResponseDto> responseDtos = new ArrayList<>();
 
         projects.stream()
@@ -152,17 +156,21 @@ public class ProjectService {
         return responseDtos;
     }
 
-    public AllProjectCollectionDetailResponseDto getProjectCollectionDetail(Long userId, Long projectId) {
-        Project project = validateUserProject(userId, projectId);
-        List<Work> projectWorks = workRepository.findByProject(project);
+    static List<CollectionDetailResponseDto> sortCollection(List<Work> works) {
+        List<CollectionDetailResponseDto> responseWorks = new ArrayList<>();
 
-        return sortWorkCollection(projectWorks);
+        works.stream()
+                .sorted(Comparator.comparing(Work::getDate)
+                        .thenComparing(Comparator.comparing(Work::getCreatedAt).reversed()))
+                .forEach(work -> {
+                    CollectionDetailResponseDto responseDto = new CollectionDetailResponseDto(work);
+                    responseWorks.add(responseDto);
+                });
+
+        return responseWorks;
     }
 
-    public AllProjectCollectionDetailResponseDto getProjectCollectionDetailByDateFilter
-            (Long userId, Long projectId, String start, String end) {
-        Project project = validateUserProject(userId, projectId);
-
+    static List<Date> stringToDateConverter(String start, String end) {
         Date startDate, endDate;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
@@ -178,22 +186,36 @@ public class ProjectService {
         cal.add(Calendar.DATE, 1);
         Date endPlusOne = cal.getTime();
 
-        List<Work> projectWorks = workRepository.findByProjectAndDateBetween(project, startDate, endPlusOne);
-
-        return sortWorkCollection(projectWorks);
+        return new ArrayList<>(Arrays.asList(startDate, endPlusOne));
     }
 
-    private AllProjectCollectionDetailResponseDto sortWorkCollection(List<Work> projectWorks) {
-        List<ProjectCollectionDetailResponseDto> works = new ArrayList<>();
+    public AllProjectCollectionDetailResponseDto getProjectCollectionDetail(Long userId, Long projectId) {
+        Project project = validateUserProject(userId, projectId);
+        List<Work> works = workRepository.findByProject(project);
+        List<Work> emptyList = Collections.emptyList();
 
-        projectWorks.stream()
-                .sorted(Comparator.comparing(Work::getDate)
-                        .thenComparing(Comparator.comparing(Work::getCreatedAt).reversed()))
-                .forEach(work -> {
-                    ProjectCollectionDetailResponseDto responseDto = new ProjectCollectionDetailResponseDto(work);
-                    works.add(responseDto);
-                });
+        if (works.size() == 0) {
+            return new AllProjectCollectionDetailResponseDto(project.getTitle(), sortCollection(emptyList));
+        }
 
-        return new AllProjectCollectionDetailResponseDto(projectWorks.get(0).getProject().getTitle(), works);
+        return new AllProjectCollectionDetailResponseDto(project.getTitle(), sortCollection(works));
+    }
+
+    public AllProjectCollectionDetailResponseDto getProjectCollectionDetailByDateFilter
+            (Long userId, Long projectId, String start, String end) {
+        Project project = validateUserProject(userId, projectId);
+
+        List<Date> convertDate = stringToDateConverter(start, end);
+        Date startDate = convertDate.get(0);
+        Date endPlusOne = convertDate.get(1);
+
+        List<Work> works = workRepository.findByProjectAndDateBetween(project, startDate, endPlusOne);
+        List<Work> emptyList = Collections.emptyList();
+
+        if (works.size() == 0) {
+            return new AllProjectCollectionDetailResponseDto(project.getTitle(), sortCollection(emptyList));
+        }
+
+        return new AllProjectCollectionDetailResponseDto(works.get(0).getProject().getTitle(), sortCollection(works));
     }
 }

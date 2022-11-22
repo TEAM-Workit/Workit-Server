@@ -1,4 +1,4 @@
-package workit.dto.project;
+package workit.dto.collection;
 
 import lombok.Data;
 import workit.entity.Work;
@@ -6,7 +6,7 @@ import workit.entity.Work;
 import java.util.Date;
 
 @Data
-public class ProjectCollectionDetailResponseDto {
+public class CollectionDetailResponseDto {
     private Long workId;
     private String projectTitle;
     private Date workDate;
@@ -15,7 +15,7 @@ public class ProjectCollectionDetailResponseDto {
     private String mainAbilityName;
     private Integer count;
 
-    public ProjectCollectionDetailResponseDto(Work work) {
+    public CollectionDetailResponseDto(Work work) {
         this.workId = work.getId();
         this.projectTitle = work.getProject().getTitle();
         this.workDate = work.getDate();
