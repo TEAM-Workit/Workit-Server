@@ -16,6 +16,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static workit.service.ProjectService.sortCollection;
+import static workit.service.ProjectService.stringToDateConverter;
 
 @Service
 @Transactional
@@ -83,11 +84,27 @@ public class AbilityService {
             Work work = workAbility.getWork();
             workIds.add(work.getId());
         });
+    public AllAbilityCollectionDetailResponseDto getAbilityCollectionDetailByDateFilter
+            (Long userId, Long abilityId, String start, String end) {
+        Ability ability = validateUserAndAbility(userId, abilityId);
+        Set<Long> workIds = getWorkIds(ability);
 
-        List<Work> works = workRepository.findAllById(workIds);
+        List<Date> convertDate = stringToDateConverter(start, end);
+        Date startDate = convertDate.get(0);
+        Date endPlusOne = convertDate.get(1);
+
+        List<Work> works = new ArrayList<>();
+
+        workRepository
+                .findAllById(workIds).stream()
+                .filter(work -> work.getDate().equals(startDate) || work.getDate().after(startDate))
+                .filter(work -> work.getDate().equals(endPlusOne) || work.getDate().before(endPlusOne))
+                .forEach(works::add);
+
+        List<Work> emptyList = Collections.emptyList();
 
         if (works.size() == 0) {
-            throw new CustomException(ResponseCode.NOT_ABILITY_PROJECT);
+            return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(emptyList));
         }
 
         return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(works));
@@ -100,5 +117,17 @@ public class AbilityService {
         return abilityRepository.findById(abilityId).orElseThrow(
                 () -> new CustomException(ResponseCode.ABILITY_NOT_FOUND)
         );
+    }
+
+    private Set<Long> getWorkIds(Ability ability) {
+        List<WorkAbility> workAbilities = workAbilityRepository.findByAbility(ability);
+        Set<Long> workIds = new HashSet<>();
+
+        workAbilities.forEach(workAbility -> {
+            Work work = workAbility.getWork();
+            workIds.add(work.getId());
+        });
+
+        return workIds;
     }
 }
