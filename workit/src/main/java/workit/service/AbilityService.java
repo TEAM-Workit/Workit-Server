@@ -80,6 +80,9 @@ public class AbilityService {
 
         List<Work> works = workRepository.findAllById(workIds);
 
+        if (works.size() == 0) {
+            throw new CustomException(ResponseCode.NOT_ABILITY_PROJECT);
+        }
 
         return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(works));
     }
