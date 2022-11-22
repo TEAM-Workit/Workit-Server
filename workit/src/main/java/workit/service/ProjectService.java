@@ -170,17 +170,7 @@ public class ProjectService {
         return responseWorks;
     }
 
-    public AllProjectCollectionDetailResponseDto getProjectCollectionDetail(Long userId, Long projectId) {
-        Project project = validateUserProject(userId, projectId);
-        List<Work> works = workRepository.findByProject(project);
-
-        return new AllProjectCollectionDetailResponseDto(works.get(0).getProject().getTitle(), sortCollection(works));
-    }
-
-    public AllProjectCollectionDetailResponseDto getProjectCollectionDetailByDateFilter
-            (Long userId, Long projectId, String start, String end) {
-        Project project = validateUserProject(userId, projectId);
-
+    static List<Date> stringToDateConverter(String start, String end) {
         Date startDate, endDate;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
@@ -196,7 +186,35 @@ public class ProjectService {
         cal.add(Calendar.DATE, 1);
         Date endPlusOne = cal.getTime();
 
+        return new ArrayList<>(Arrays.asList(startDate, endPlusOne));
+    }
+
+    public AllProjectCollectionDetailResponseDto getProjectCollectionDetail(Long userId, Long projectId) {
+        Project project = validateUserProject(userId, projectId);
+        List<Work> works = workRepository.findByProject(project);
+        List<Work> emptyList = Collections.emptyList();
+
+        if (works.size() == 0) {
+            return new AllProjectCollectionDetailResponseDto(project.getTitle(), sortCollection(emptyList));
+        }
+
+        return new AllProjectCollectionDetailResponseDto(project.getTitle(), sortCollection(works));
+    }
+
+    public AllProjectCollectionDetailResponseDto getProjectCollectionDetailByDateFilter
+            (Long userId, Long projectId, String start, String end) {
+        Project project = validateUserProject(userId, projectId);
+
+        List<Date> convertDate = stringToDateConverter(start, end);
+        Date startDate = convertDate.get(0);
+        Date endPlusOne = convertDate.get(1);
+
         List<Work> works = workRepository.findByProjectAndDateBetween(project, startDate, endPlusOne);
+        List<Work> emptyList = Collections.emptyList();
+
+        if (works.size() == 0) {
+            return new AllProjectCollectionDetailResponseDto(project.getTitle(), sortCollection(emptyList));
+        }
 
         return new AllProjectCollectionDetailResponseDto(works.get(0).getProject().getTitle(), sortCollection(works));
     }

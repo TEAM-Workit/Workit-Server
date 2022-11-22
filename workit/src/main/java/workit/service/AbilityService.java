@@ -76,14 +76,14 @@ public class AbilityService {
 
     public AllAbilityCollectionDetailResponseDto getAbilityCollectionDetail(Long userId, Long abilityId) {
         Ability ability = validateUserAndAbility(userId, abilityId);
+        Set<Long> workIds = getWorkIds(ability);
 
-        List<WorkAbility> workAbilities = workAbilityRepository.findByAbility(ability);
-        Set<Long> workIds = new HashSet<>();
+        List<Work> works = workRepository.findAllById(workIds);
 
-        workAbilities.forEach(workAbility -> {
-            Work work = workAbility.getWork();
-            workIds.add(work.getId());
-        });
+
+        return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(works));
+    }
+
     public AllAbilityCollectionDetailResponseDto getAbilityCollectionDetailByDateFilter
             (Long userId, Long abilityId, String start, String end) {
         Ability ability = validateUserAndAbility(userId, abilityId);
