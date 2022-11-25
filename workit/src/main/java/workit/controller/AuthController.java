@@ -33,7 +33,7 @@ public class AuthController {
     public ResponseEntity<ResponseMessage> socialLogin(@PathVariable String social, @Valid @RequestBody LoginRequestDto requestDto) {
         return ResponseMessage.toResponseEntity(
                 ResponseCode.LOGIN_SUCCESS,
-                authService.socialLogin(social, requestDto.getSocialToken())
+                authService.socialLogin(social, requestDto.getSocialToken(), requestDto.getNickName())
         );
     }
 }

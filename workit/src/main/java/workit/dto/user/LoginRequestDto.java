@@ -8,4 +8,5 @@ import javax.validation.constraints.NotNull;
 public class LoginRequestDto {
     @NotNull
     private String socialToken;
+    private String nickName;
 }
