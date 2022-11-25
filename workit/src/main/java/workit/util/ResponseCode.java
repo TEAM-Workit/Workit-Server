@@ -16,6 +16,7 @@ public enum ResponseCode {
     LOGIN_SUCCESS(HttpStatus.CREATED, true, "로그인 성공"),
     LOGIN_FAILED(HttpStatus.BAD_REQUEST, false, "로그인에 실패하였습니다."),
     DISAGREE_KAKAO_EMAIL(HttpStatus.BAD_REQUEST, false, "카카오 이메일 항목에 동의하지 않았습니다."),
+    FAILED_VALIDATE_APPLE_LOGIN(HttpStatus.BAD_REQUEST, false, "애플 로그인 내부 오류입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, false, "해당 계정이 존재하지 않습니다."),
     INVALID_SOCIAL_TYPE(HttpStatus.BAD_REQUEST, false, "유효하지 않는 소셜 타입입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, false, "유효하지 않은 토큰입니다."),

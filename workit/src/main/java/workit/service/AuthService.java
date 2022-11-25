@@ -1,10 +1,13 @@
 package workit.service;
 
-import com.google.gson.JsonParser;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import workit.auth.JwtTokenProvider;
 import workit.dto.user.LoginResponseDto;
 import workit.dto.user.SignupRequestDto;
@@ -15,8 +18,16 @@ import workit.util.CustomException;
 import workit.util.ResponseCode;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.RSAPublicKeySpec;
+import java.util.Base64;
+import java.util.Objects;
+
+import static org.springframework.security.config.Elements.JWT;
 
 @Service
 @RequiredArgsConstructor
@@ -36,14 +47,17 @@ public class AuthService {
     @Value("${kakao.redirect-url}")
     private String redirectUrl;
 
+    @Value("${apple.apple-url}")
+    private String appleUrl;
+
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public LoginResponseDto socialLogin(String social, String socialToken) {
+    public LoginResponseDto socialLogin(String social, String socialToken, String userName) {
         if (social.equals(KAKAO)) {
             return kakaoLogin(socialToken);
         } else if (social.equals(APPLE)) {
-            return appleLogin(socialToken);
+            return appleLogin(socialToken, userName);
         }
         throw new CustomException(ResponseCode.INVALID_SOCIAL_TYPE);
     }
@@ -139,8 +153,81 @@ public class AuthService {
         throw new CustomException(ResponseCode.INTERNAL_SERVER_ERROR);
     }
 
-    private LoginResponseDto appleLogin(String socialToken) {
-        throw new CustomException(ResponseCode.INTERNAL_SERVER_ERROR);
+    private LoginResponseDto appleLogin(String socialToken, String nickName) {
+        StringBuilder result = new StringBuilder();
+        try {
+            if (nickName == null) {
+                throw new CustomException(ResponseCode.NO_VALUE_REQUIRED);
+            }
+
+            URL url = new URL(appleUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("GET");
+            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                result.append(line);
+            }
+            br.close();
+
+            JsonObject keys = (JsonObject) JsonParser.parseString(result.toString());
+            JsonArray keyArray = (JsonArray) keys.get("keys");
+            String[] decodeArray = socialToken.split("\\.");
+            String header = new String(Base64.getDecoder().decode(decodeArray[0]));
+
+            JsonElement kid = ((JsonObject) JsonParser.parseString(header)).get("kid");
+            JsonElement alg = ((JsonObject) JsonParser.parseString(header)).get("alg");
+
+            JsonObject avaliableObject = null;
+            for (int i = 0; i < keyArray.size(); i++) {
+                JsonObject appleObject = (JsonObject) keyArray.get(i);
+                JsonElement appleKid = appleObject.get("kid");
+                JsonElement appleAlg = appleObject.get("alg");
+
+                if (Objects.equals(appleKid, kid) && Objects.equals(appleAlg, alg)) {
+                    avaliableObject = appleObject;
+                    break;
+                }
+            }
+
+            if (ObjectUtils.isEmpty(avaliableObject)) {
+                throw new CustomException(ResponseCode.BAD_REQUEST);
+            }
+
+            PublicKey publicKey = this.getPublicKey(avaliableObject);
+
+
+            Claims userInfo = Jwts.parserBuilder().setSigningKey(publicKey).build().parseClaimsJws(socialToken).getBody();
+            JsonObject userInfoObject = (JsonObject) JsonParser.parseString(new Gson().toJson(userInfo));
+            String email = userInfoObject.get("email").getAsString();
+            System.out.println(email);
+
+            String accessToken = getAccessToken(new SignupRequestDto(email, nickName, SocialType.APPLE));
+
+            return new LoginResponseDto(accessToken);
+        } catch (IOException e) {
+            throw new CustomException(ResponseCode.FAILED_VALIDATE_APPLE_LOGIN);
+        }
+    }
+
+    private PublicKey getPublicKey(JsonObject object) {
+        String nStr = object.get("n").toString();
+        String eStr = object.get("e").toString();
+
+        byte[] nBytes = Base64.getUrlDecoder().decode(nStr.substring(1, nStr.length() - 1));
+        byte[] eBytes = Base64.getUrlDecoder().decode(eStr.substring(1, eStr.length() - 1));
+
+        BigInteger n = new BigInteger(1, nBytes);
+        BigInteger e = new BigInteger(1, eBytes);
+
+        try {
+            RSAPublicKeySpec publicKeySpec = new RSAPublicKeySpec(n, e);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            return keyFactory.generatePublic(publicKeySpec);
+        } catch (Exception exception) {
+            throw new CustomException(ResponseCode.BAD_REQUEST);
+        }
     }
 
     private String getAccessToken(SignupRequestDto requestDto) {
