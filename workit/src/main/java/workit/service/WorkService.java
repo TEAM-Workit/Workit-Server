@@ -77,7 +77,19 @@ public class WorkService {
         return new AllWorkResponseDto(workResponseDtos);
     }
 
-    public WorkCreateResponseDto createWork(WorkCreateRequestDto request, Long userId) {
+    public WorkDetailResponseDto getWorkDetail(Long userId, Long workId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ResponseCode.USER_NOT_FOUND)
+        );
+        Work work = workRepository.findById(workId).orElseThrow(
+                () -> new CustomException(ResponseCode.WORK_NOT_FOUND)
+        );
+        Validator.validateUsersWork(work, user);
+
+        return new WorkDetailResponseDto(work);
+    }
+
+    public WorkDetailResponseDto createWork(WorkCreateRequestDto request, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
@@ -102,10 +114,10 @@ public class WorkService {
         work.save(workRequestDto);
         workRepository.save(work);
 
-        return new WorkCreateResponseDto(work);
+        return new WorkDetailResponseDto(work);
     }
 
-    public WorkCreateResponseDto modifyWork(WorkCreateRequestDto request, Long workId, Long userId) {
+    public WorkDetailResponseDto modifyWork(WorkCreateRequestDto request, Long workId, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
@@ -131,7 +143,7 @@ public class WorkService {
         work.save(workRequestDto);
         workRepository.save(work);
 
-        return new WorkCreateResponseDto(work);
+        return new WorkDetailResponseDto(work);
     }
 
     public void deleteWork(Long workId, Long userId) {

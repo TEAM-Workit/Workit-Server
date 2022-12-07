@@ -39,6 +39,7 @@ public enum ResponseCode {
 
     // work
     GET_ALL_WORKIT_SUCCESS(HttpStatus.OK, true, "전체 워킷 조회 성공"),
+    GET_WORKIT_DETAIL_SUCCESS(HttpStatus.OK, true, "워킷 상세 조회 성공"),
     INVALID_WORK_TITLE_LENGTH(HttpStatus.BAD_REQUEST, false, "30자 이하의 업무 제목으로 설정해주세요."),
     INVALID_WORK_DESCRIPTION_LENGTH(HttpStatus.BAD_REQUEST, false, "1000자 이하의 설명으로 작성해주세요."),
     WORK_NOT_FOUND(HttpStatus.BAD_REQUEST, false, "업무를 찾을 수 없습니다."),

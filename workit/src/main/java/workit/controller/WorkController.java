@@ -39,6 +39,16 @@ public class WorkController {
         );
     }
 
+    @GetMapping("/{workId}")
+    public ResponseEntity<ResponseMessage> getWorkDetail(@PathVariable Long workId, HttpServletRequest request) {
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.GET_WORKIT_DETAIL_SUCCESS,
+                workService.getWorkDetail(userId, workId)
+        );
+    }
+
     @PostMapping
     public ResponseEntity<ResponseMessage> createWork(
             @Valid @RequestBody WorkCreateRequestDto requestDto, HttpServletRequest request) {
