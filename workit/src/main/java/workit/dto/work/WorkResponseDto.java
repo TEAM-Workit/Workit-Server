@@ -1,9 +1,12 @@
 package workit.dto.work;
 
 import lombok.Data;
+import workit.dto.ability.AbilityInfo;
 import workit.entity.Work;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 public class WorkResponseDto {
@@ -12,8 +15,7 @@ public class WorkResponseDto {
     private Date date;
     private String workTitle;
     private String description;
-    private String mainAbilityName;
-    private int count;
+    private List<AbilityInfo> abilityInfos;
 
     public WorkResponseDto(Work work) {
         this.workId = work.getId();
@@ -21,7 +23,8 @@ public class WorkResponseDto {
         this.date = work.getDate();
         this.workTitle = work.getTitle();
         this.description = work.getDescription();
-        this.mainAbilityName = work.getWorkAbilities().get(0).getAbility().getName();
-        this.count = (int) ((long) work.getWorkAbilities().size() - 1);
+        this.abilityInfos = work.getWorkAbilities().stream()
+                .map(workAbility -> new AbilityInfo(workAbility.getAbility()))
+                .collect(Collectors.toList());
     }
 }
