@@ -137,11 +137,11 @@ public class AuthService {
 
             JsonElement element = JsonParser.parseString(result.toString());
 
-            boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
-            if(!hasEmail){
-                throw new CustomException(ResponseCode.DISAGREE_KAKAO_EMAIL);
+            boolean disagreeEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email_needs_agreement").getAsBoolean();
+            String email = "";
+            if(!disagreeEmail){
+                email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
             }
-            String email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
             String nickname = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
 
             String accessToken = getAccessToken(new SignupRequestDto(email, nickname, SocialType.KAKAO));
