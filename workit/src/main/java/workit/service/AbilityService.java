@@ -77,11 +77,12 @@ public class AbilityService {
     public AllAbilityCollectionDetailResponseDto getAbilityCollectionDetail(Long userId, Long abilityId) {
         Ability ability = validateUserAndAbility(userId, abilityId);
         Set<Long> workIds = getWorkIds(ability);
+        List<Work> emptyList = Collections.emptyList();
 
         List<Work> works = workRepository.findAllById(workIds);
 
         if (works.size() == 0) {
-            throw new CustomException(ResponseCode.NOT_ABILITY_PROJECT);
+            return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(emptyList));
         }
 
         return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(works));
