@@ -2,7 +2,6 @@ package workit.service;
 
 import com.google.gson.*;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,8 +25,6 @@ import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
 import java.util.Objects;
-
-import static org.springframework.security.config.Elements.JWT;
 
 @Service
 @RequiredArgsConstructor
@@ -157,7 +154,7 @@ public class AuthService {
         StringBuilder result = new StringBuilder();
         try {
             if (nickName == null) {
-                throw new CustomException(ResponseCode.NO_VALUE_REQUIRED);
+                throw new CustomException(ResponseCode.NULL_VALUE);
             }
 
             URL url = new URL(appleUrl);

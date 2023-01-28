@@ -32,7 +32,7 @@ public class Validator {
 
     public static void validateUsersWork(Work work, User user) {
         if (!work.getProject().getUser().equals(user)) {
-            throw new CustomException(ResponseCode.NOT_USERS_WORK);
+            throw new CustomException(ResponseCode.NOT_USER_WORK);
         }
     }
 }
