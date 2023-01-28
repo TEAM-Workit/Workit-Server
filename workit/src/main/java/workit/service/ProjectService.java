@@ -21,7 +21,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static workit.validator.Validator.validateProjectTitleLength;
 import static workit.validator.Validator.validateProjectTitleNull;
 
 @Service
@@ -42,7 +41,6 @@ public class ProjectService {
         String title = request.getTitle();
 
         validateProjectTitleNull(title);
-        validateProjectTitleLength(title);
 
         Optional<Project> existProject = projectRepository.findByUserIdAndTitle(userId, title);
 
@@ -69,7 +67,6 @@ public class ProjectService {
         Project project = validateUserProject(userId, projectId);
 
         validateProjectTitleNull(title);
-        validateProjectTitleLength(title);
 
         Optional<Project> existProject = projectRepository.findByUserIdAndTitle(userId, title);
         if (existProject.isPresent() && !project.getTitle().equals(title)) {

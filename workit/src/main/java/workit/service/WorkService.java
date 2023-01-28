@@ -100,7 +100,6 @@ public class WorkService {
             throw new CustomException(ResponseCode.NO_ABILITIES);
         }
 
-        Validator.validateWorkTitleLength(request.getWorkTitle());
         Validator.validateWorkDescriptionLength(request.getDescription());
 
         Work work = new Work();
@@ -162,7 +161,6 @@ public class WorkService {
     private Project getProject(User user, String projectTitle) {
         return projectRepository.findByUserAndTitle(user, projectTitle)
                 .orElseGet(() -> {
-                    Validator.validateProjectTitleLength(projectTitle);
                     Project proj = new Project(user, projectTitle);
                     projectRepository.save(proj);
                     return proj;
