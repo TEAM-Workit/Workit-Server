@@ -1,7 +1,6 @@
 package workit.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<ResponseMessage> getUserInfo(HttpServletRequest request) {
+    public ResponseMessage getUserInfo(HttpServletRequest request) {
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
         return ResponseMessage.toResponseEntity(
@@ -30,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/nickname")
-    public ResponseEntity<ResponseMessage> getUserNickname(HttpServletRequest request) {
+    public ResponseMessage getUserNickname(HttpServletRequest request) {
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
         return ResponseMessage.toResponseEntity(
@@ -40,7 +39,7 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity<ResponseNonDataMessage> deleteUser(HttpServletRequest request) {
+    public ResponseNonDataMessage deleteUser(HttpServletRequest request) {
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
         userService.deleteUser(userId);
 

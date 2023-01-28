@@ -1,7 +1,6 @@
 package workit.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import workit.dto.user.LoginRequestDto;
 import workit.service.AuthService;
@@ -30,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/login/{social}")
-    public ResponseEntity<ResponseMessage> socialLogin(@PathVariable String social, @Valid @RequestBody LoginRequestDto requestDto) {
+    public ResponseMessage socialLogin(@PathVariable String social, @Valid @RequestBody LoginRequestDto requestDto) {
         return ResponseMessage.toResponseEntity(
                 ResponseCode.LOGIN_SUCCESS,
                 authService.socialLogin(social, requestDto.getSocialToken(), requestDto.getNickName())

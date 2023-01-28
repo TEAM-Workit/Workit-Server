@@ -1,0 +1,37 @@
+package workit.util;
+
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+public enum StatusCode {
+    OK(20000),
+    CREATED(20100),
+
+    BAD_REQUEST(40000),
+    NULL_VALUE(40001),
+    USER_NOT_FOUND(40002),
+    INVALID_SOCIAL_TYPE(40003),
+    LOGIN_FAILED(40004),
+    FAILED_VALIDATE_APPLE_LOGIN(40005),
+    INVALID_DATE_TYPE(40006),
+    NO_ABILITIES(40007),
+    INVALID_WORK_DESCRIPTION_LENGTH(40008),
+
+    WORK_NOT_FOUND(40009),
+    NOT_USER_WORK(40010),
+
+    NULL_PROJECT_TITLE(40011),
+    ALREADY_EXIST_PROJECT_TITLE(40012),
+    PROJECT_NOT_FOUND(40013),
+    NOT_USER_PROJECT(40014),
+    ABILITY_NOT_FOUND(40015),
+
+    UNAUTHORIZED(40100),
+    INTERNAL_SERVER_ERROR(50000);
+
+    private final int value;
+
+    public int getValue() {
+        return value;
+    }
+}

@@ -1,7 +1,6 @@
 package workit.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import workit.dto.project.ProjectRequestDto;
 import workit.service.ProjectService;
@@ -20,7 +19,7 @@ public class ProjectController {
     private final ProjectService projectService;
 
     @PostMapping
-    public ResponseEntity<ResponseMessage> createProject(
+    public ResponseMessage createProject(
             @Valid @RequestBody ProjectRequestDto projectRequestDto, HttpServletRequest request) {
 
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
@@ -32,8 +31,8 @@ public class ProjectController {
     }
 
     @PatchMapping("/{projectId}")
-    public ResponseEntity<ResponseMessage> modifyProject(@PathVariable Long projectId,
-                                                         @Valid @RequestBody ProjectRequestDto projectRequestDto, HttpServletRequest request) {
+    public ResponseMessage modifyProject(@PathVariable Long projectId,
+                                         @Valid @RequestBody ProjectRequestDto projectRequestDto, HttpServletRequest request) {
 
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
@@ -44,7 +43,7 @@ public class ProjectController {
     }
 
     @DeleteMapping("/{projectId}")
-    public ResponseEntity<ResponseNonDataMessage> deleteProject(@PathVariable Long projectId, HttpServletRequest request) {
+    public ResponseNonDataMessage deleteProject(@PathVariable Long projectId, HttpServletRequest request) {
 
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
@@ -56,7 +55,7 @@ public class ProjectController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ResponseMessage> getProjects(HttpServletRequest request) {
+    public ResponseMessage getProjects(HttpServletRequest request) {
 
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
@@ -67,7 +66,7 @@ public class ProjectController {
     }
 
     @GetMapping("/recent")
-    public ResponseEntity<ResponseMessage> getRecentProjects(HttpServletRequest request) {
+    public ResponseMessage getRecentProjects(HttpServletRequest request) {
 
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
@@ -78,7 +77,7 @@ public class ProjectController {
     }
 
     @GetMapping("/collection")
-    public ResponseEntity<ResponseMessage> getProjectCollection(HttpServletRequest request) {
+    public ResponseMessage getProjectCollection(HttpServletRequest request) {
 
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
@@ -89,7 +88,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}/collection")
-    public ResponseEntity<ResponseMessage> getProjectCollectionDetail(@PathVariable Long projectId, HttpServletRequest request) {
+    public ResponseMessage getProjectCollectionDetail(@PathVariable Long projectId, HttpServletRequest request) {
 
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
@@ -100,9 +99,9 @@ public class ProjectController {
     }
 
     @GetMapping("/{projectId}/collection/date")
-    public ResponseEntity<ResponseMessage> getProjectCollectionDetailByDateFilter(@PathVariable Long projectId,
-                                                                      @RequestParam("start") String start, @RequestParam("end") String end,
-                                                                      HttpServletRequest request) {
+    public ResponseMessage getProjectCollectionDetailByDateFilter(@PathVariable Long projectId,
+                                                                  @RequestParam("start") String start, @RequestParam("end") String end,
+                                                                  HttpServletRequest request) {
 
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
