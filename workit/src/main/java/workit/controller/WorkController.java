@@ -1,7 +1,6 @@
 package workit.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import workit.dto.work.WorkCreateRequestDto;
 import workit.service.WorkService;
@@ -19,7 +18,7 @@ public class WorkController {
     private final WorkService workService;
 
     @GetMapping("/date")
-    public ResponseEntity<ResponseMessage> getAllWorksByDateFilter(
+    public ResponseMessage getAllWorksByDateFilter(
             @RequestParam("start") String start, @RequestParam("end") String end, HttpServletRequest request) {
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
@@ -30,7 +29,7 @@ public class WorkController {
     }
 
     @GetMapping
-    public ResponseEntity<ResponseMessage> getAllWorks(HttpServletRequest request) {
+    public ResponseMessage getAllWorks(HttpServletRequest request) {
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
         return ResponseMessage.toResponseEntity(
@@ -40,7 +39,7 @@ public class WorkController {
     }
 
     @GetMapping("/{workId}")
-    public ResponseEntity<ResponseMessage> getWorkDetail(@PathVariable Long workId, HttpServletRequest request) {
+    public ResponseMessage getWorkDetail(@PathVariable Long workId, HttpServletRequest request) {
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
         return ResponseMessage.toResponseEntity(
@@ -50,7 +49,7 @@ public class WorkController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseMessage> createWork(
+    public ResponseMessage createWork(
             @Valid @RequestBody WorkCreateRequestDto requestDto, HttpServletRequest request) {
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
@@ -61,7 +60,7 @@ public class WorkController {
     }
 
     @PutMapping("/{workId}")
-    public ResponseEntity<ResponseMessage> modifyWork(
+    public ResponseMessage modifyWork(
             @Valid @RequestBody WorkCreateRequestDto requestDto, @PathVariable Long workId, HttpServletRequest request
     ) {
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
@@ -73,7 +72,7 @@ public class WorkController {
     }
 
     @DeleteMapping("/{workId}")
-    public ResponseEntity<ResponseNonDataMessage> deleteWork(@PathVariable Long workId, HttpServletRequest request) {
+    public ResponseNonDataMessage deleteWork(@PathVariable Long workId, HttpServletRequest request) {
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
         workService.deleteWork(workId, userId);
 

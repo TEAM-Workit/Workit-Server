@@ -1,7 +1,6 @@
 package workit.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import workit.service.AbilityService;
 import workit.util.ResponseCode;
@@ -16,7 +15,7 @@ public class AbilityController {
     private final AbilityService abilityService;
 
     @GetMapping
-    public ResponseEntity<ResponseMessage> getAllWorks() {
+    public ResponseMessage getAllWorks() {
         return ResponseMessage.toResponseEntity(
                 ResponseCode.GET_ALL_ABILITY_SUCCESS,
                 abilityService.getAllAbilities()
@@ -24,7 +23,7 @@ public class AbilityController {
     }
 
     @GetMapping("/collection")
-    public ResponseEntity<ResponseMessage> getAbilityCollection(HttpServletRequest request) {
+    public ResponseMessage getAbilityCollection(HttpServletRequest request) {
 
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
@@ -37,7 +36,7 @@ public class AbilityController {
     }
 
     @GetMapping("/{abilityId}/collection")
-    public ResponseEntity<ResponseMessage> getAbilityCollectionDetail(@PathVariable Long abilityId, HttpServletRequest request) {
+    public ResponseMessage getAbilityCollectionDetail(@PathVariable Long abilityId, HttpServletRequest request) {
 
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
@@ -48,9 +47,9 @@ public class AbilityController {
     }
 
     @GetMapping("/{abilityId}/collection/date")
-    public ResponseEntity<ResponseMessage> getAbilityCollectionDetailByDateFilter(@PathVariable Long abilityId,
-                                                                                  @RequestParam("start") String start, @RequestParam("end") String end,
-                                                                                  HttpServletRequest request) {
+    public ResponseMessage getAbilityCollectionDetailByDateFilter(@PathVariable Long abilityId,
+                                                                  @RequestParam("start") String start, @RequestParam("end") String end,
+                                                                  HttpServletRequest request) {
 
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
