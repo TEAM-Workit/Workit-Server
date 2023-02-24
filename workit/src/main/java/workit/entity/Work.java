@@ -28,7 +28,7 @@ public class Work extends TimeStamped {
     @JoinColumn(name = "project_id")
     private Project project;
 
-    @Column(length = 30)
+    @Column(length = 60)
     private String title;
 
     @Column(columnDefinition = "TEXT")
