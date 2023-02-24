@@ -10,6 +10,11 @@ public class Validator {
         if (title.length() == 0 || title.length() > 20) {
             throw new CustomException(ResponseCode.INVALID_PROJECT_TITLE_LENGTH);
         }
+    }
+
+    public static void validateWorkTitleLength(String title) {
+        if (title.length() == 0 || title.length() > 50) {
+            throw new CustomException(ResponseCode.INVALID_WORK_TITLE_LENGTH);
         }
     }
 

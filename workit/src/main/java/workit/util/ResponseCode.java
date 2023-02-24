@@ -49,6 +49,7 @@ public enum ResponseCode {
     INVALID_DATE_TYPE(StatusCode.INVALID_DATE_TYPE, false, "올바른 날짜 형식이 아닙니다"),
     NO_ABILITIES(StatusCode.NO_ABILITIES, false, "태그를 선택하지 않았습니다"),
     WORK_NOT_FOUND(StatusCode.WORK_NOT_FOUND, false, "업무를 찾을 수 없습니다"),
+    INVALID_WORK_TITLE_LENGTH(StatusCode.INVALID_WORK_TITLE_LENGTH, false, "유효하지 않는 업무 명입니다"),
 
 
     // ability

@@ -102,6 +102,7 @@ public class WorkService {
 
         Validator.validateWorkDescriptionLength(request.getDescription());
         validateProjectTitleLength(request.getProjectTitle());
+        validateWorkTitleLength(request.getWorkTitle());
 
         Work work = new Work();
         WorkRequestDto workRequestDto = new WorkRequestDto(
