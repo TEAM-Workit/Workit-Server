@@ -101,6 +101,7 @@ public class WorkService {
         }
 
         Validator.validateWorkDescriptionLength(request.getDescription());
+        validateProjectTitleLength(request.getProjectTitle());
 
         Work work = new Work();
         WorkRequestDto workRequestDto = new WorkRequestDto(
@@ -132,6 +133,7 @@ public class WorkService {
             throw new CustomException(ResponseCode.NO_ABILITIES);
         }
 
+        validateProjectTitleLength(request.getProjectTitle());
         WorkRequestDto workRequestDto = new WorkRequestDto(
                 project,
                 request.getWorkTitle(),
