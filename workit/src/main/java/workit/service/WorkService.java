@@ -8,13 +8,14 @@ import workit.entity.*;
 import workit.repository.*;
 import workit.util.CustomException;
 import workit.util.ResponseCode;
-import workit.validator.Validator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static workit.validator.Validator.*;
 
 @Service
 @Transactional
@@ -84,7 +85,7 @@ public class WorkService {
         Work work = workRepository.findById(workId).orElseThrow(
                 () -> new CustomException(ResponseCode.WORK_NOT_FOUND)
         );
-        Validator.validateUsersWork(work, user);
+        validateUsersWork(work, user);
 
         return new WorkDetailResponseDto(work);
     }
@@ -100,7 +101,8 @@ public class WorkService {
             throw new CustomException(ResponseCode.NO_ABILITIES);
         }
 
-        Validator.validateWorkDescriptionLength(request.getDescription());
+        validateWorkDescriptionLength(request.getDescription());
+
         validateProjectTitleLength(request.getProjectTitle());
         validateWorkTitleLength(request.getWorkTitle());
 
@@ -126,7 +128,7 @@ public class WorkService {
         Work work = workRepository.findById(workId).orElseThrow(
                 () -> new CustomException(ResponseCode.WORK_NOT_FOUND)
         );
-        Validator.validateUsersWork(work, user);
+        validateUsersWork(work, user);
 
         Project project = getProject(user, request.getProjectTitle());
 
@@ -135,6 +137,8 @@ public class WorkService {
         }
 
         validateProjectTitleLength(request.getProjectTitle());
+        validateWorkTitleLength(request.getWorkTitle());
+
         WorkRequestDto workRequestDto = new WorkRequestDto(
                 project,
                 request.getWorkTitle(),
@@ -156,7 +160,7 @@ public class WorkService {
         Work work = workRepository.findById(workId).orElseThrow(
                 () -> new CustomException(ResponseCode.WORK_NOT_FOUND)
         );
-        Validator.validateUsersWork(work, user);
+        validateUsersWork(work, user);
 
         workRepository.delete(work);
     }
