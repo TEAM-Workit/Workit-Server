@@ -26,7 +26,7 @@ public enum ResponseCode {
 
 
     // project
-    NULL_PROJECT_TITLE(StatusCode.NULL_PROJECT_TITLE, false, "프로젝트 이름 값이 없습니다"),
+    INVALID_PROJECT_TITLE_LENGTH(StatusCode.INVALID_PROJECT_TITLE_LENGTH, false, "유효하지 않은 프로젝트 명입니다"),
     ALREADY_EXIST_PROJECT_TITLE(StatusCode.ALREADY_EXIST_PROJECT_TITLE, false, "이미 생성된 프로젝트입니다"),
     NOT_USER_PROJECT(StatusCode.NOT_USER_PROJECT, false, "유저에 해당하는 프로젝트가 존재하지 않습니다"),
     PROJECT_NOT_FOUND(StatusCode.PROJECT_NOT_FOUND, false, "해당 프로젝트가 존재하지 않습니다"),
@@ -49,6 +49,7 @@ public enum ResponseCode {
     INVALID_DATE_TYPE(StatusCode.INVALID_DATE_TYPE, false, "올바른 날짜 형식이 아닙니다"),
     NO_ABILITIES(StatusCode.NO_ABILITIES, false, "태그를 선택하지 않았습니다"),
     WORK_NOT_FOUND(StatusCode.WORK_NOT_FOUND, false, "업무를 찾을 수 없습니다"),
+    INVALID_WORK_TITLE_LENGTH(StatusCode.INVALID_WORK_TITLE_LENGTH, false, "유효하지 않는 업무 명입니다"),
 
 
     // ability

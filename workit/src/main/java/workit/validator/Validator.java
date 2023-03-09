@@ -6,9 +6,15 @@ import workit.util.CustomException;
 import workit.util.ResponseCode;
 
 public class Validator {
-    public static void validateProjectTitleNull(String title) {
-        if (title.length() == 0) {
-            throw new CustomException(ResponseCode.NULL_PROJECT_TITLE);
+    public static void validateProjectTitleLength(String title) {
+        if (title.length() == 0 || title.length() > 20) {
+            throw new CustomException(ResponseCode.INVALID_PROJECT_TITLE_LENGTH);
+        }
+    }
+
+    public static void validateWorkTitleLength(String title) {
+        if (title.length() == 0 || title.length() > 50) {
+            throw new CustomException(ResponseCode.INVALID_WORK_TITLE_LENGTH);
         }
     }
 
