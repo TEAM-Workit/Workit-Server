@@ -3,11 +3,11 @@ package workit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import workit.dto.collection.CollectionDetailResponseDto;
 import workit.dto.project.AllProjectCollectionDetailResponseDto;
 import workit.dto.project.ProjectCollectionResponseDto;
 import workit.dto.project.ProjectRequestDto;
 import workit.dto.project.ProjectResponseDto;
+import workit.dto.work.WorkResponseDto;
 import workit.entity.Project;
 import workit.entity.User;
 import workit.entity.Work;
@@ -153,18 +153,18 @@ public class ProjectService {
         return responseDtos;
     }
 
-    static List<CollectionDetailResponseDto> sortCollection(List<Work> works) {
-        List<CollectionDetailResponseDto> responseWorks = new ArrayList<>();
+    static List<WorkResponseDto> sortCollection(List<Work> works) {
+        List<WorkResponseDto> workResponseDtos = new ArrayList<>();
 
         works.stream()
                 .sorted(Comparator.comparing(Work::getDate)
                         .thenComparing(Comparator.comparing(Work::getCreatedAt).reversed()))
                 .forEach(work -> {
-                    CollectionDetailResponseDto responseDto = new CollectionDetailResponseDto(work);
-                    responseWorks.add(responseDto);
+                    WorkResponseDto workResponseDto = new WorkResponseDto(work);
+                    workResponseDtos.add(workResponseDto);
                 });
 
-        return responseWorks;
+        return workResponseDtos;
     }
 
     static List<Date> stringToDateConverter(String start, String end) {
