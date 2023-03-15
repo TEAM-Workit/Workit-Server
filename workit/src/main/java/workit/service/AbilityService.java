@@ -41,29 +41,29 @@ public class AbilityService {
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
+        List<Ability> allAbilities = abilityRepository.findAll();
 
         List<Project> projects = projectRepository.findByUser(user);
         Map<Long, Integer> abilityCount = new HashMap<>();
+
+        for (Ability ability : allAbilities) {
+            abilityCount.put(ability.getId(), 0);
+        }
 
         projects.forEach(project -> {
             List<Work> works = workRepository.findByProject(project);
             works.forEach(work -> {
                 List<WorkAbility> workAbilities = workAbilityRepository.findByWork(work);
                 workAbilities.forEach((workAbility -> {
-                    Ability ability = workAbility.getAbility();
-                    Long abilityId = ability.getId();
-
-                    if (!abilityCount.containsKey(abilityId)) {
-                        abilityCount.put(abilityId, 0);
-                    }
+                    Long abilityId = workAbility.getAbility().getId();
                     abilityCount.put(abilityId, abilityCount.get(abilityId) + 1);
                 }));
             });
         });
 
         List<AbilityCollectionResponseDto> responseDtos = new ArrayList<>();
-        List<Ability> abilities = abilityRepository.findAllById(abilityCount.keySet());
-        abilities.stream()
+
+        allAbilities.stream()
                 .sorted(Comparator.comparing(Ability::getName))
                 .forEach(ability -> {
                     AbilityCollectionResponseDto responseDto =

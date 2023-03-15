@@ -27,8 +27,6 @@ public class AbilityController {
 
         Long userId = Long.valueOf(request.getUserPrincipal().getName());
 
-
-        abilityService.getAbilityCollection(userId);
         return ResponseMessage.toResponseEntity(
                 ResponseCode.GET_ABILITY_COLLECTION,
                 abilityService.getAbilityCollection(userId)
