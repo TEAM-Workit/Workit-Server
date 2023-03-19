@@ -36,7 +36,6 @@ public class WorkService {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date startDate = simpleDateFormat.parse(start);
             Date endDate = simpleDateFormat.parse(end);
-
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(endDate);
             calendar.add(Calendar.DATE, 1);
@@ -47,8 +46,8 @@ public class WorkService {
             List<WorkResponseDto> workResponseDtos = new ArrayList<>();
             projects.forEach(project -> {
                 workRepository.findByProject(project).stream()
-                        .filter(work -> work.getDate().equals(startDate) || work.getDate().after(startDate))
-                        .filter(work -> work.getDate().equals(finalEndDate) || work.getDate().before(finalEndDate))
+                        .filter(work -> !work.getDate().before(startDate))
+                        .filter(work -> !work.getDate().after(finalEndDate))
                         .forEach(work -> {
                             WorkResponseDto workResponseDto = new WorkResponseDto(work);
                             workResponseDtos.add(workResponseDto);
