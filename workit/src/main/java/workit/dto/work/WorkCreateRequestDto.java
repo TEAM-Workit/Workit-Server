@@ -15,7 +15,7 @@ public class WorkCreateRequestDto {
     @NotNull
     private Date date;
     @NotNull
-    private String projectTitle;
+    private Long projectId;
     @NotNull
     private String workTitle;
     @NotNull

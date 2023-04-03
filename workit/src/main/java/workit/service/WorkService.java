@@ -36,7 +36,6 @@ public class WorkService {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date startDate = simpleDateFormat.parse(start);
             Date endDate = simpleDateFormat.parse(end);
-
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(endDate);
             calendar.add(Calendar.DATE, 1);
@@ -47,8 +46,8 @@ public class WorkService {
             List<WorkResponseDto> workResponseDtos = new ArrayList<>();
             projects.forEach(project -> {
                 workRepository.findByProject(project).stream()
-                        .filter(work -> work.getDate().equals(startDate) || work.getDate().after(startDate))
-                        .filter(work -> work.getDate().equals(finalEndDate) || work.getDate().before(finalEndDate))
+                        .filter(work -> !work.getDate().before(startDate))
+                        .filter(work -> !work.getDate().after(finalEndDate))
                         .forEach(work -> {
                             WorkResponseDto workResponseDto = new WorkResponseDto(work);
                             workResponseDtos.add(workResponseDto);
@@ -95,15 +94,13 @@ public class WorkService {
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
-        Project project = getProject(user, request.getProjectTitle());
+        Project project = getProject(user, request.getProjectId());
 
         if (request.getAbilities().isEmpty()) {
             throw new CustomException(ResponseCode.NO_ABILITIES);
         }
 
         validateWorkDescriptionLength(request.getDescription());
-
-        validateProjectTitleLength(request.getProjectTitle());
         validateWorkTitleLength(request.getWorkTitle());
 
         Work work = new Work();
@@ -130,13 +127,12 @@ public class WorkService {
         );
         validateUsersWork(work, user);
 
-        Project project = getProject(user, request.getProjectTitle());
+        Project project = getProject(user, request.getProjectId());
 
         if (request.getAbilities().isEmpty()) {
             throw new CustomException(ResponseCode.NO_ABILITIES);
         }
 
-        validateProjectTitleLength(request.getProjectTitle());
         validateWorkTitleLength(request.getWorkTitle());
 
         WorkRequestDto workRequestDto = new WorkRequestDto(
@@ -165,13 +161,9 @@ public class WorkService {
         workRepository.delete(work);
     }
 
-    private Project getProject(User user, String projectTitle) {
-        return projectRepository.findByUserAndTitle(user, projectTitle)
-                .orElseGet(() -> {
-                    Project proj = new Project(user, projectTitle);
-                    projectRepository.save(proj);
-                    return proj;
-                });
+    private Project getProject(User user, Long projectId) {
+        return projectRepository.findByUserIdAndId(user.getId(), projectId)
+                .orElseThrow(() -> new CustomException(ResponseCode.PROJECT_NOT_FOUND));
     }
 
     private List<WorkAbility> makeWorkAbilities(Work work, List<Ability> abilities) {
