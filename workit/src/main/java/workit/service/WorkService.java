@@ -94,15 +94,13 @@ public class WorkService {
                 () -> new CustomException(ResponseCode.USER_NOT_FOUND)
         );
 
-        Project project = getProject(user, request.getProjectTitle());
+        Project project = getProject(user, request.getProjectId());
 
         if (request.getAbilities().isEmpty()) {
             throw new CustomException(ResponseCode.NO_ABILITIES);
         }
 
         validateWorkDescriptionLength(request.getDescription());
-
-        validateProjectTitleLength(request.getProjectTitle());
         validateWorkTitleLength(request.getWorkTitle());
 
         Work work = new Work();
@@ -129,13 +127,12 @@ public class WorkService {
         );
         validateUsersWork(work, user);
 
-        Project project = getProject(user, request.getProjectTitle());
+        Project project = getProject(user, request.getProjectId());
 
         if (request.getAbilities().isEmpty()) {
             throw new CustomException(ResponseCode.NO_ABILITIES);
         }
 
-        validateProjectTitleLength(request.getProjectTitle());
         validateWorkTitleLength(request.getWorkTitle());
 
         WorkRequestDto workRequestDto = new WorkRequestDto(
@@ -164,13 +161,9 @@ public class WorkService {
         workRepository.delete(work);
     }
 
-    private Project getProject(User user, String projectTitle) {
-        return projectRepository.findByUserAndTitle(user, projectTitle)
-                .orElseGet(() -> {
-                    Project proj = new Project(user, projectTitle);
-                    projectRepository.save(proj);
-                    return proj;
-                });
+    private Project getProject(User user, Long projectId) {
+        return projectRepository.findByUserIdAndId(user.getId(), projectId)
+                .orElseThrow(() -> new CustomException(ResponseCode.PROJECT_NOT_FOUND));
     }
 
     private List<WorkAbility> makeWorkAbilities(Work work, List<Ability> abilities) {
