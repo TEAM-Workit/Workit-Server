@@ -167,6 +167,7 @@ public class WorkService {
     }
 
     private List<WorkAbility> makeWorkAbilities(Work work, List<Ability> abilities) {
+        workAbilityRepository.deleteAll(work.getWorkAbilities());
         List<WorkAbility> workAbilities = new ArrayList<>();
         for (Ability ability: abilities) {
             WorkAbility workAbility = new WorkAbility(work, ability);
