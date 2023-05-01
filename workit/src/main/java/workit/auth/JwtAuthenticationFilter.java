@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -26,6 +27,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         if (accessToken != null) {
             if (jwtTokenProvider.validateToken(accessToken)) {
                 setAuthentication(accessToken);
+            } else {
+                HttpServletResponse res = (HttpServletResponse) response;
+                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "잘못된 토큰입니다.");
             }
         }
         chain.doFilter(request, response);
