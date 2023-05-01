@@ -10,6 +10,7 @@ import workit.util.CustomException;
 import workit.util.ResponseCode;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -95,6 +96,7 @@ public class WorkService {
         );
 
         Project project = getProject(user, request.getProjectId());
+        project.setModifiedWorkAt(LocalDateTime.now());
 
         if (request.getAbilities().isEmpty()) {
             throw new CustomException(ResponseCode.NO_ABILITIES);

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,8 @@ public class Project extends TimeStamped {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     List<Work> works = new ArrayList<>();
+
+    private LocalDateTime modifiedWorkAt = LocalDateTime.now();
 
     public Project(User user,String title) {
         this.user = user;
