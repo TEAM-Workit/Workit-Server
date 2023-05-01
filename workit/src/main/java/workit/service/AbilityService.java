@@ -78,40 +78,51 @@ public class AbilityService {
         Ability ability = validateUserAndAbility(userId, abilityId);
         Set<Long> workIds = getWorkIds(ability);
         List<Work> emptyList = Collections.emptyList();
+        List<Work> userWorks = getUserWorks(workIds, userId);
 
-        List<Work> works = workRepository.findAllById(workIds);
-
-        if (works.size() == 0) {
+        if (userWorks.size() == 0) {
             return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(emptyList));
         }
 
-        return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(works));
+        return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(userWorks));
     }
 
     public AllAbilityCollectionDetailResponseDto getAbilityCollectionDetailByDateFilter
             (Long userId, Long abilityId, String start, String end) {
         Ability ability = validateUserAndAbility(userId, abilityId);
         Set<Long> workIds = getWorkIds(ability);
+        List<Work> userWorks = getUserWorks(workIds, userId);
 
         List<Date> convertDate = stringToDateConverter(start, end);
         Date startDate = convertDate.get(0);
         Date endPlusOne = convertDate.get(1);
 
-        List<Work> works = new ArrayList<>();
-
-        workRepository
-                .findAllById(workIds).stream()
+        List<Work> filterWorks = userWorks.stream()
                 .filter(work -> work.getDate().equals(startDate) || work.getDate().after(startDate))
                 .filter(work -> work.getDate().equals(endPlusOne) || work.getDate().before(endPlusOne))
-                .forEach(works::add);
+                .collect(Collectors.toList());
 
         List<Work> emptyList = Collections.emptyList();
 
-        if (works.size() == 0) {
+        if (filterWorks.size() == 0) {
             return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(emptyList));
         }
 
-        return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(works));
+        return new AllAbilityCollectionDetailResponseDto(ability.getName(), sortCollection(filterWorks));
+    }
+
+    public List<Work> getUserWorks(Set<Long> workIds, Long userId) {
+        List<Work> allWorks = workRepository.findAllById(workIds);
+        List<Work> works = new ArrayList<>();
+
+        for (Work work : allWorks) {
+            Long workUserId = work.getProject().getUser().getId();
+            if (Objects.equals(workUserId, userId)) {
+                works.add(work);
+            }
+        }
+
+        return works;
     }
 
     private Ability validateUserAndAbility(Long userId, Long abilityId) {

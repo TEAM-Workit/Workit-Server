@@ -113,8 +113,7 @@ public class ProjectService {
         List<ProjectResponseDto> responseDtos = new ArrayList<>();
 
         projects.stream()
-                .sorted(Comparator.comparing(Project::getCreatedAt).reversed()).limit(10)
-                .sorted(Comparator.comparing(Project::getTitle))
+                .sorted(Comparator.comparing(Project::getModifiedWorkAt).reversed()).limit(10)
                 .forEach(project -> {
                     ProjectResponseDto responseDto = new ProjectResponseDto(project);
                     responseDtos.add(responseDto);
@@ -156,8 +155,7 @@ public class ProjectService {
     static List<WorkResponseDto> sortCollection(List<Work> works) {
         List<WorkResponseDto> workResponseDtos = new ArrayList<>();
 
-        works.stream()
-                .sorted(Comparator.comparing(Work::getDate)
+        works.stream().sorted(Comparator.comparing(Work::getDate).reversed()
                         .thenComparing(Comparator.comparing(Work::getCreatedAt).reversed()))
                 .forEach(work -> {
                     WorkResponseDto workResponseDto = new WorkResponseDto(work);

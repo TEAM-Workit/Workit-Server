@@ -22,6 +22,7 @@ public enum ResponseCode {
     // user
     GET_USER_INFO_SUCCESS(StatusCode.OK, true, "사용자 정보 조회 성공"),
     DELETE_USER_SUCCESS(StatusCode.OK, true, "탈퇴 성공"),
+    MODIFY_USER_SUCCESS(StatusCode.OK, true, "사용자 정보 수정 성공"),
     USER_NOT_FOUND(StatusCode.USER_NOT_FOUND, false, "해당 계정이 존재하지 않습니다"),
 
 
