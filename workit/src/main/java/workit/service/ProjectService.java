@@ -95,7 +95,7 @@ public class ProjectService {
         List<ProjectResponseDto> responseDtos = new ArrayList<>();
 
         projects.stream()
-                .sorted(Comparator.comparing(Project::getTitle))
+                .sorted(Comparator.comparing(Project::getCreatedAt).reversed())
                 .forEach(project -> {
                     ProjectResponseDto responseDto = new ProjectResponseDto(project);
                     responseDtos.add(responseDto);
