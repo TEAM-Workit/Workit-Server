@@ -156,8 +156,7 @@ public class ProjectService {
     static List<WorkResponseDto> sortCollection(List<Work> works) {
         List<WorkResponseDto> workResponseDtos = new ArrayList<>();
 
-        works.stream()
-                .sorted(Comparator.comparing(Work::getDate)
+        works.stream().sorted(Comparator.comparing(Work::getDate).reversed()
                         .thenComparing(Comparator.comparing(Work::getCreatedAt).reversed()))
                 .forEach(work -> {
                     WorkResponseDto workResponseDto = new WorkResponseDto(work);
