@@ -37,6 +37,8 @@ public class User extends TimeStamped implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Project> projects = new ArrayList<>();
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
     public User(SignupRequestDto requestDto) {
         this.email = requestDto.getEmail();
         this.nickname = requestDto.getNickname();
