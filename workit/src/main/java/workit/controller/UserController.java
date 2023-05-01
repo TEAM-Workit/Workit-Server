@@ -1,16 +1,15 @@
 package workit.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import workit.dto.user.UserModifyDto;
 import workit.service.UserService;
 import workit.util.ResponseCode;
 import workit.util.ResponseMessage;
 import workit.util.ResponseNonDataMessage;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,6 +44,16 @@ public class UserController {
 
         return ResponseNonDataMessage.toResponseEntity(
                 ResponseCode.DELETE_USER_SUCCESS
+        );
+    }
+
+    @PatchMapping
+    public ResponseMessage modifyUser(@Valid @RequestBody UserModifyDto userModifyDto, HttpServletRequest request) {
+        Long userId = Long.valueOf(request.getUserPrincipal().getName());
+
+        return ResponseMessage.toResponseEntity(
+                ResponseCode.MODIFY_USER_SUCCESS,
+                userService.modifyUser(userId, userModifyDto)
         );
     }
 }

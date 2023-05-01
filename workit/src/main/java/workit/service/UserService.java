@@ -3,7 +3,7 @@ package workit.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import workit.dto.user.UserDeleteDto;
+import workit.dto.user.UserModifyDto;
 import workit.dto.user.UserInfoResponseDto;
 import workit.dto.user.UserNicknameResponseDto;
 import workit.entity.User;
@@ -39,11 +39,11 @@ public class UserService {
         user.setDeleted(true);
     }
 
-    public UserDeleteDto modifyUser(Long userId, UserDeleteDto userDeleteDto) {
+    public UserModifyDto modifyUser(Long userId, UserModifyDto userModifyDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ResponseCode.USER_NOT_FOUND));
 
-        user.setDeleteReason(userDeleteDto.getDeleteReason());
+        user.setDeleteReason(userModifyDto.getDeleteReason());
 
-        return new UserDeleteDto(userDeleteDto.getDeleteReason());
+        return new UserModifyDto(userModifyDto.getDeleteReason());
     }
 }
