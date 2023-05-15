@@ -30,6 +30,7 @@ public class AbilityService {
 
     public AllAbilitiesResponseDto getAllAbilities() {
         List<AbilityInfo> abilityInfos = abilityRepository.findAll().stream()
+                .sorted(Comparator.comparing(Ability::getName))
                 .map(AbilityInfo::new)
                 .collect(Collectors.toList());
 
