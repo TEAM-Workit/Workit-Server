@@ -47,15 +47,10 @@ public class WorkService {
 
             List<Project> projects = projectRepository.findByUser(user);
             List<WorkResponseDto> workResponseDtos = new ArrayList<>();
-            projects.forEach(project -> {
-                workRepository.findByProject(project).stream()
-                        .filter(work -> !work.getDate().before(startDate))
-                        .filter(work -> !work.getDate().after(finalEndDate))
-                        .forEach(work -> {
-                            WorkResponseDto workResponseDto = new WorkResponseDto(work);
-                            workResponseDtos.add(workResponseDto);
-                        });
-            });
+            projects.forEach(project -> workResponseDtos.addAll(
+                    workRepository.findByProjectAndDateBetween(project, startDate, finalEndDate).stream()
+                            .map(WorkResponseDto::new)
+                            .collect(Collectors.toUnmodifiableList())));
             return new AllWorkResponseDto(workResponseDtos.stream()
                     .sorted(Comparator.comparing(WorkResponseDto::getDate))
                     .collect(Collectors.toUnmodifiableList()));
