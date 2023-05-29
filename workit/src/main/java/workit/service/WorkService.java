@@ -74,7 +74,9 @@ public class WorkService {
                     });
         });
 
-        return new AllWorkResponseDto(workResponseDtos);
+        return new AllWorkResponseDto(workResponseDtos.stream()
+                .sorted(Comparator.comparing(WorkResponseDto::getDate))
+                .collect(Collectors.toUnmodifiableList()));
     }
 
     public WorkDetailResponseDto getWorkDetail(Long userId, Long workId) {
