@@ -139,6 +139,8 @@ public class AuthService {
             String email = null;
             if(!disagreeEmail){
                 email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
+            } else {
+                email = element.getAsJsonObject().get("id").getAsString();
             }
             String nickname = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
 
@@ -229,10 +231,6 @@ public class AuthService {
     }
 
     private String getAccessToken(SignupRequestDto requestDto) {
-        if (requestDto.getEmail() == null) {
-            User user = userRepository.save(new User(requestDto));
-            return jwtTokenProvider.createToken(user.getEmail());
-        }
         if (!userRepository.existsByEmail(requestDto.getEmail())) {
             User user = userRepository.save(new User(requestDto));
             return jwtTokenProvider.createToken(user.getEmail());
