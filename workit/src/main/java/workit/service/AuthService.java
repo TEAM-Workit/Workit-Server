@@ -143,10 +143,11 @@ public class AuthService {
                 email = element.getAsJsonObject().get("id").getAsString();
             }
             String nickname = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
+            SignupRequestDto request = new SignupRequestDto(email, nickname, SocialType.KAKAO);
+            User user = getUser(request);
+            String accessToken = jwtTokenProvider.createToken(user.getEmail());
 
-            String accessToken = getAccessToken(new SignupRequestDto(email, nickname, SocialType.KAKAO));
-
-            return new LoginResponseDto(accessToken);
+            return new LoginResponseDto(accessToken, user.getId());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -202,10 +203,11 @@ public class AuthService {
             JsonObject userInfoObject = (JsonObject) JsonParser.parseString(new Gson().toJson(userInfo));
             String email = userInfoObject.get("email").getAsString();
             System.out.println(email);
+            SignupRequestDto request = new SignupRequestDto(email, nickName, SocialType.APPLE);
+            User user = getUser(request);
+            String accessToken = jwtTokenProvider.createToken(user.getEmail());
 
-            String accessToken = getAccessToken(new SignupRequestDto(email, nickName, SocialType.APPLE));
-
-            return new LoginResponseDto(accessToken);
+            return new LoginResponseDto(accessToken, user.getId());
         } catch (IOException e) {
             throw new CustomException(ResponseCode.FAILED_VALIDATE_APPLE_LOGIN);
         }
@@ -230,14 +232,12 @@ public class AuthService {
         }
     }
 
-    private String getAccessToken(SignupRequestDto requestDto) {
+    private User getUser(SignupRequestDto requestDto) {
         if (!userRepository.existsByEmail(requestDto.getEmail())) {
-            User user = userRepository.save(new User(requestDto));
-            return jwtTokenProvider.createToken(user.getEmail());
+            return userRepository.save(new User(requestDto));
         }
-        User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
+        return userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
                 () -> new CustomException(ResponseCode.LOGIN_FAILED)
         );
-        return jwtTokenProvider.createToken(user.getEmail());
     }
 }
