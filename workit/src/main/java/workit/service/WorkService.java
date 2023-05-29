@@ -13,8 +13,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static workit.validator.Validator.*;
 
@@ -54,7 +56,9 @@ public class WorkService {
                             workResponseDtos.add(workResponseDto);
                         });
             });
-            return new AllWorkResponseDto(workResponseDtos);
+            return new AllWorkResponseDto(workResponseDtos.stream()
+                    .sorted(Comparator.comparing(WorkResponseDto::getDate))
+                    .collect(Collectors.toUnmodifiableList()));
         } catch (Exception e) {
             throw new CustomException(ResponseCode.INVALID_DATE_TYPE);
         }
