@@ -147,7 +147,7 @@ public class AuthService {
             User user = getUser(request);
             String accessToken = jwtTokenProvider.createToken(user.getEmail());
 
-            return new LoginResponseDto(accessToken, user.getId());
+            return new LoginResponseDto(user.getId(), email, nickname, accessToken);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -207,7 +207,7 @@ public class AuthService {
             User user = getUser(request);
             String accessToken = jwtTokenProvider.createToken(user.getEmail());
 
-            return new LoginResponseDto(accessToken, user.getId());
+            return new LoginResponseDto(user.getId(), email, nickName, accessToken);
         } catch (IOException e) {
             throw new CustomException(ResponseCode.FAILED_VALIDATE_APPLE_LOGIN);
         }
