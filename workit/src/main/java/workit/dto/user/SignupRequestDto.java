@@ -10,4 +10,5 @@ public class SignupRequestDto {
     private String email;
     private String nickname;
     private SocialType socialType;
+    private String socialId;
 }
