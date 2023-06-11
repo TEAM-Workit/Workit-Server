@@ -136,14 +136,15 @@ public class AuthService {
             System.out.println(element.getAsJsonObject());
 
             boolean disagreeEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email_needs_agreement").getAsBoolean();
-            String email = null;
+            String email;
             if(!disagreeEmail){
                 email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
             } else {
                 email = element.getAsJsonObject().get("id").getAsString();
             }
             String nickname = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
-            SignupRequestDto request = new SignupRequestDto(email, nickname, SocialType.KAKAO);
+            String kakaoId = element.getAsJsonObject().get("id").getAsString();
+            SignupRequestDto request = new SignupRequestDto(email, nickname, SocialType.KAKAO, kakaoId);
             User user = getUser(request);
             String accessToken = jwtTokenProvider.createToken(user.getEmail());
 
@@ -176,35 +177,36 @@ public class AuthService {
             JsonArray keyArray = (JsonArray) keys.get("keys");
             String[] decodeArray = socialToken.split("\\.");
             String header = new String(Base64.getDecoder().decode(decodeArray[0]));
+            System.out.println(header);
 
             JsonElement kid = ((JsonObject) JsonParser.parseString(header)).get("kid");
             JsonElement alg = ((JsonObject) JsonParser.parseString(header)).get("alg");
 
-            JsonObject avaliableObject = null;
+            JsonObject availableObject = null;
             for (int i = 0; i < keyArray.size(); i++) {
                 JsonObject appleObject = (JsonObject) keyArray.get(i);
                 JsonElement appleKid = appleObject.get("kid");
                 JsonElement appleAlg = appleObject.get("alg");
 
                 if (Objects.equals(appleKid, kid) && Objects.equals(appleAlg, alg)) {
-                    avaliableObject = appleObject;
+                    availableObject = appleObject;
                     break;
                 }
             }
 
-            if (ObjectUtils.isEmpty(avaliableObject)) {
+            if (ObjectUtils.isEmpty(availableObject)) {
                 throw new CustomException(ResponseCode.BAD_REQUEST);
             }
 
-            PublicKey publicKey = this.getPublicKey(avaliableObject);
+            PublicKey publicKey = this.getPublicKey(availableObject);
 
 
             Claims userInfo = Jwts.parserBuilder().setSigningKey(publicKey).build().parseClaimsJws(socialToken).getBody();
             JsonObject userInfoObject = (JsonObject) JsonParser.parseString(new Gson().toJson(userInfo));
             String email = userInfoObject.get("email").getAsString();
-            System.out.println(email);
-            SignupRequestDto request = new SignupRequestDto(email, nickName, SocialType.APPLE);
+            SignupRequestDto request = new SignupRequestDto(email, nickName, SocialType.APPLE, email);
             User user = getUser(request);
+            System.out.println(user);
             String accessToken = jwtTokenProvider.createToken(user.getEmail());
 
             return new LoginResponseDto(user.getId(), email, nickName, accessToken);
@@ -233,10 +235,10 @@ public class AuthService {
     }
 
     private User getUser(SignupRequestDto requestDto) {
-        if (!userRepository.existsByEmail(requestDto.getEmail())) {
+        if (!userRepository.existsBySocialId(requestDto.getSocialId())) {
             return userRepository.save(new User(requestDto));
         }
-        return userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
+        return userRepository.findBySocialId(requestDto.getSocialId()).orElseThrow(
                 () -> new CustomException(ResponseCode.LOGIN_FAILED)
         );
     }
