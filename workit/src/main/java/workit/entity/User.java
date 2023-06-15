@@ -28,6 +28,9 @@ public class User extends TimeStamped implements UserDetails {
     @Enumerated(EnumType.STRING)
     private SocialType socialType;
 
+    @Column
+    private String socialId;
+
     @Column(length = 20)
     private String nickname;
 
@@ -47,6 +50,7 @@ public class User extends TimeStamped implements UserDetails {
         this.email = requestDto.getEmail();
         this.nickname = requestDto.getNickname();
         this.socialType = requestDto.getSocialType();
+        this.socialId = requestDto.getSocialId();
     }
 
     @Override
