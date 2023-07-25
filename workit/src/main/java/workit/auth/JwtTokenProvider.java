@@ -1,8 +1,13 @@
 package workit.auth;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,31 +17,27 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import workit.util.CustomException;
-import workit.util.ResponseCode;
 
-import javax.annotation.PostConstruct;
+import javax.crypto.SecretKey;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Base64;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
-@RequiredArgsConstructor
 @PropertySource("classpath:application.yml")
 public class JwtTokenProvider {
 
+    private final SecretKey key;
     private final UserDetailsService userDetailsService;
 
-    @Value("${jwt.secret}")
-    private String secretKey;
-
-    private static final long ONE_MONTH = 1000L * 60 * 60 * 24 * 30;
+    private static final long THIRTY_YEAR = 1000L * 60 * 60 * 24 * 30 * 12 * 30;
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final Log LOG = LogFactory.getLog(JwtTokenProvider.class);
 
-    @PostConstruct
-    protected void init() {
-        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
+                            UserDetailsService userDetailsService) {
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        this.userDetailsService = userDetailsService;
     }
 
     public String createToken(String email) {
@@ -46,8 +47,8 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + ONE_MONTH))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .setExpiration(new Date(now.getTime() + THIRTY_YEAR))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -57,7 +58,7 @@ public class JwtTokenProvider {
     }
 
     public String getUserEmail(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
     }
 
     public String resolveToken(HttpServletRequest request) {
@@ -66,7 +67,7 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SignatureException ex) {
             LOG.error("Invalid JWT signature");

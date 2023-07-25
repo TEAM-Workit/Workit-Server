@@ -36,7 +36,7 @@ public class UserService {
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ResponseCode.USER_NOT_FOUND));
 
-        user.setDeleted(true);
+        user.setIsDeleted(true);
     }
 
     public UserModifyDto modifyUser(Long userId, UserModifyDto userModifyDto) {

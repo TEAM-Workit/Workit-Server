@@ -8,3 +8,20 @@ spring:
   sql:
     init:
       mode: always
+jwt:
+  secret: jeonghoonhyunji1234567890abcdefg9765hijklmn1234
+
+kakao:
+  authUrl: https://kauth.kakao.com/oauth/token
+  user-api-url: https://kapi.kakao.com/v2/user/me
+  restapi-key: abcdefgabcdefg
+  redirect-url: http://localhost:8080/auth/kakao
+
+apple:
+  apple-url: https://appleid.apple.com/auth/keys
+
+fcm:
+  key:
+    path: firebase-adminsdk.json
+    scope: https://www.googleapis.com/auth/cloud-platform
+    url: secret

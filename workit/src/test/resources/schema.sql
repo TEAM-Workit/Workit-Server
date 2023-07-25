@@ -36,7 +36,7 @@ create table project
     modified_at timestamp DEFAULT CURRENT_TIMESTAMP(),
     title       varchar(30),
     user_id     bigint,
-    foreign key (user_id) references users(user_id) on delete cascade,
+    foreign key (user_id) references users(user_id) on delete cascade
 );
 
 create table work
@@ -49,7 +49,7 @@ create table work
     description text,
     title       varchar(60),
     project_id  bigint,
-    foreign key (project_id) references project(project_id) on delete cascade,
+    foreign key (project_id) references project(project_id) on delete cascade
 );
 
 create table work_ability
@@ -61,5 +61,5 @@ create table work_ability
     ability_id      bigint,
     work_id         bigint,
     foreign key (ability_id) references ability(ability_id) on delete cascade,
-    foreign key (work_id) references work(work_id) on delete cascade,
+    foreign key (work_id) references work(work_id) on delete cascade
 );
