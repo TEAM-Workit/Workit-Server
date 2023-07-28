@@ -29,8 +29,8 @@ public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
     private String secretKey;
-
-    private static final long ONE_MONTH = 1000L * 60 * 60 * 24 * 30;
+    @Value("${EXPIRED_LENGTH}")
+    private long EXPIRED_LENGTH;
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final Log LOG = LogFactory.getLog(JwtTokenProvider.class);
 
@@ -46,7 +46,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + ONE_MONTH))
+                .setExpiration(new Date(now.getTime() + EXPIRED_LENGTH))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
