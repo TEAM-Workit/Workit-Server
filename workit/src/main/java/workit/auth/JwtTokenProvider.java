@@ -30,7 +30,10 @@ public class JwtTokenProvider {
     private final SecretKey key;
     private final UserDetailsService userDetailsService;
 
-    private static final long THIRTY_YEAR = 1000L * 60 * 60 * 24 * 30 * 12 * 30;
+    @Value("${jwt.secret}")
+    private String secretKey;
+    @Value("${EXPIRED_LENGTH}")
+    private long EXPIRED_LENGTH;
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final Log LOG = LogFactory.getLog(JwtTokenProvider.class);
 
@@ -47,8 +50,8 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + THIRTY_YEAR))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .setExpiration(new Date(now.getTime() + EXPIRED_LENGTH))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
